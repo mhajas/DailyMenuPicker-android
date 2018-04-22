@@ -4,11 +4,16 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import noman.googleplaces.*
-import pv239.fi.muni.cz.dailymenupicker.parser.WebPageHtmlParser
-import soft.brunhilda.org.dailymenupicker.restaurant.server.MockService
+import soft.brunhilda.org.dailymenupicker.collectors.rest.RESTFoodCollector
+import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
+import soft.brunhilda.org.dailymenupicker.entity.RestaurantDailyData
 
 
-class MainActivity : AppCompatActivity(), PlacesListener {
+class MainActivity : AppCompatActivity(), PlacesListener, CollectedRestaurantProcessor {
+
+    val foodCollector = RESTFoodCollector()
+    var listItems = mutableListOf<FoodEntityAdapterItem>()
+    var restaurants = mutableMapOf<String, RestaurantDailyData>()
 
     override fun onPlacesFailure(e: PlacesException?) {
 
@@ -16,14 +21,24 @@ class MainActivity : AppCompatActivity(), PlacesListener {
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {
         places!!.forEach {
-            val mockService = MockService()
-            val foods = WebPageHtmlParser(mockService.getParserConfig(it.placeId)).parse(null)
+            println("Found: " + it.placeId)
+            foodCollector.getRestaurantData(it.placeId, this)
+        }
+    }
 
-            runOnUiThread {
-                main_activity_restaurant_name.text = it.name
-                main_activity_soup.text = foods.menuHeader
-                main_list_view.adapter = FoodEntityAdapter(this, foods.menuItems)
-            }
+    override fun displayCollectedRestaurant(placeID: String, restaurantDailyData: RestaurantDailyData?) {
+        if (restaurantDailyData == null) {
+            return
+        }
+
+        restaurants[placeID] = restaurantDailyData
+
+        restaurantDailyData.menu.forEach({
+            listItems.add(FoodEntityAdapterItem(it, restaurantDailyData.soup, restaurantDailyData.soupIncludedInPrice))
+        })
+
+        runOnUiThread {
+            refreshList()
         }
     }
 
@@ -39,14 +54,17 @@ class MainActivity : AppCompatActivity(), PlacesListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         NRPlaces.Builder()
                 .listener(this)
-                .key("")
+                .key("AIzaSyAMJQuIQAzLRHdCGbxhfsvr-q7lFEaPxPg")
                 .latlng(49.2227476, 16.584627)
                 .radius(20)
                 .type(PlaceType.RESTAURANT)
                 .build()
                 .execute()
+    }
+
+    fun refreshList() {
+        main_list_view.adapter = FoodEntityAdapter(this, listItems)
     }
 }

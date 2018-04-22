@@ -1,19 +1,17 @@
-package cz.muni.fi.pv239.cv2retrofit
+package soft.brunhilda.org.dailymenupicker.collectors.rest
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-class Api {
-	private val url = "https://api.github.com"
+class RetrofitApi {
+	private val url = "http://demo6784082.mockable.io/"
 
 	private var retrofit: Retrofit = Retrofit.Builder()
 			.baseUrl(url)
 			.addConverterFactory(GsonConverterFactory.create())
 			.build()
 
-	fun get(): ParserService {
-		return retrofit.create(ParserService::class.java)
+	fun get(): MockAPIService {
+		return retrofit.create(MockAPIService::class.java)
 	}
 }
-

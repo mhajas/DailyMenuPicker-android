@@ -11,35 +11,31 @@ import soft.brunhilda.org.dailymenupicker.entity.RestaurantDailyData
 
 class MainActivity : AppCompatActivity(), PlacesListener, CollectedRestaurantProcessor {
 
-    val foodCollector = RESTFoodCollector()
-    var listItems = mutableListOf<FoodEntityAdapterItem>()
-    var restaurants = mutableMapOf<String, RestaurantDailyData>()
+    private val foodCollector = RESTFoodCollector()
+    private var listItems = mutableListOf<FoodEntityAdapterItem>()
 
     override fun onPlacesFailure(e: PlacesException?) {
 
     }
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {
-        places!!.forEach {
-            println("Found: " + it.placeId)
-            foodCollector.getRestaurantData(it.placeId, this)
+        places?.forEach {
+            foodCollector.getRestaurantData(it, this)
         }
     }
 
-    override fun displayCollectedRestaurant(placeID: String, restaurantDailyData: RestaurantDailyData?) {
-        if (restaurantDailyData == null) {
-            return
-        }
-
-        restaurants[placeID] = restaurantDailyData
-
+    override fun displayCollectedRestaurant(restaurantDailyData: RestaurantDailyData) {
         restaurantDailyData.menu.forEach({
-            listItems.add(FoodEntityAdapterItem(it, restaurantDailyData.soup, restaurantDailyData.soupIncludedInPrice))
+            listItems.add(FoodEntityAdapterItem(it, restaurantDailyData))
         })
 
         runOnUiThread {
             refreshList()
         }
+    }
+
+    override fun displayNotFoundRestaurant(placeData: Place) {
+        // Do something smart
     }
 
     override fun onPlacesFinished() {
@@ -64,7 +60,7 @@ class MainActivity : AppCompatActivity(), PlacesListener, CollectedRestaurantPro
                 .execute()
     }
 
-    fun refreshList() {
+    private fun refreshList() {
         main_list_view.adapter = FoodEntityAdapter(this, listItems)
     }
 }

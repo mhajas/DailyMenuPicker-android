@@ -26,7 +26,7 @@ class FoodEntityAdapter(
 		view?.findViewById<TextView>(R.id.dayfood_item_price)?.text = food.foodEntity.price.toString() + " CZK"
 		view?.findViewById<TextView>(R.id.dayfood_soup)?.text = food.restaurantDailyData.soup[0].name // TODO: add support for more soups from one restaurant
 
-		if (food.restaurantDailyData.soupIncludedInPrice) {
+		if (food.restaurantDailyData.soup[0].price == null) {
 			view?.findViewById<TextView>(R.id.dayfood_soup_price)?.text = "v cene"
 		} else {
 			view?.findViewById<TextView>(R.id.dayfood_soup_price)?.text = food.restaurantDailyData.soup[0].price.toString() + " CZK"

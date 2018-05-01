@@ -4,6 +4,7 @@ import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.FoodCollector
 import soft.brunhilda.org.dailymenupicker.CollectedRestaurantProcessor
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantDailyData
+import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 
 /**
  * Created by mhajas on 4/21/18.
@@ -18,7 +19,7 @@ class RESTFoodCollector: FoodCollector() {
         if (data == null) {
             restaurantProcessor.displayNotFoundRestaurant(googlePlaceData)
         } else {
-            restaurantProcessor.displayCollectedRestaurant(RestaurantDailyData(googlePlaceData, data))
+            restaurantProcessor.displayCollectedRestaurant(RestaurantWeekData(googlePlaceData, data))
         }
     }
 }

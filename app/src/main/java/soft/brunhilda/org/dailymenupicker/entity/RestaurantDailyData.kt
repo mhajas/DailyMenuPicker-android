@@ -1,13 +1,8 @@
 package soft.brunhilda.org.dailymenupicker.entity
 
-import noman.googleplaces.Place
+import java.util.*
 
 /**
  * Created by mhajas on 4/21/18.
  */
-data class RestaurantDailyData (var googlePlaceData: Place, var restaurantName: String, var soup: List<FoodEntity>, var menu: List<FoodEntity>, var soupIncludedInPrice: Boolean) {
-
-    constructor(googlePlaceData: Place, dataTransferObject: RestaurantDailyDataTransferObject)
-            : this(googlePlaceData, dataTransferObject.restaurantName, dataTransferObject.soup, dataTransferObject.menu, dataTransferObject.soupIncludedInPrice)
-
-}
+data class RestaurantDailyData (var menu: List<FoodEntity>, var soup: List<FoodEntity>, var date: Date) {}

@@ -2,6 +2,7 @@ package soft.brunhilda.org.dailymenupicker
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import noman.googleplaces.*
 import soft.brunhilda.org.dailymenupicker.collectors.rest.RESTFoodCollector
@@ -9,33 +10,19 @@ import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantDailyData
 
 
-class MainActivity : AppCompatActivity(), PlacesListener, CollectedRestaurantProcessor {
-
-    private val foodCollector = RESTFoodCollector()
-    private var listItems = mutableListOf<FoodEntityAdapterItem>()
+class MainActivity : AppCompatActivity(), PlacesListener {
+    private var adapterItemsPreparer: AdapterItemsResolver? = null
 
     override fun onPlacesFailure(e: PlacesException?) {
 
     }
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {
-        places?.forEach {
-            foodCollector.getRestaurantData(it, this)
-        }
-    }
-
-    override fun displayCollectedRestaurant(restaurantDailyData: RestaurantDailyData) {
-        restaurantDailyData.menu.forEach({
-            listItems.add(FoodEntityAdapterItem(it, restaurantDailyData))
-        })
+        adapterItemsPreparer?.addPlaces(places)
 
         runOnUiThread {
-            refreshList()
+            adapterItemsPreparer?.showFood()
         }
-    }
-
-    override fun displayNotFoundRestaurant(placeData: Place) {
-        // Do something smart
     }
 
     override fun onPlacesFinished() {
@@ -50,6 +37,10 @@ class MainActivity : AppCompatActivity(), PlacesListener, CollectedRestaurantPro
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        adapterItemsPreparer = AdapterItemsResolver(this, main_list_view, mutableMapOf())
+
+        Hawk.init(this).build() // no idea where to put this
+
         NRPlaces.Builder()
                 .listener(this)
                 .key("AIzaSyAMJQuIQAzLRHdCGbxhfsvr-q7lFEaPxPg")
@@ -58,9 +49,5 @@ class MainActivity : AppCompatActivity(), PlacesListener, CollectedRestaurantPro
                 .type(PlaceType.RESTAURANT)
                 .build()
                 .execute()
-    }
-
-    private fun refreshList() {
-        main_list_view.adapter = FoodEntityAdapter(this, listItems)
     }
 }

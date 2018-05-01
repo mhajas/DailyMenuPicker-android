@@ -1,17 +1,17 @@
 package soft.brunhilda.org.dailymenupicker
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
-import android.support.design.widget.NavigationView
-import android.support.v7.app.ActionBarDrawerToggle
 import kotlinx.android.synthetic.main.app_bar_main.*
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
-import soft.brunhilda.org.dailymenupicker.fragments.RestaurantsFragment
+import soft.brunhilda.org.dailymenupicker.fragments.TodayAllRestaurantFragment
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun displaySelectedScreen(id: Int){
         when (id) {
             R.id.nav_restaurants -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, RestaurantsFragment()).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllRestaurantFragment()).commit()
             }
             R.id.nav_today_all_foods -> {
                 supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment()).commit()

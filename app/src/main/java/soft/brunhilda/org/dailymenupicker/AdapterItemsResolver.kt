@@ -8,6 +8,7 @@ import com.orhanobut.hawk.Hawk
 import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.collectors.rest.RESTFoodCollector
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
+import soft.brunhilda.org.dailymenupicker.entity.RestaurantEntityAdapterItem
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 
 class AdapterItemsResolver (var context: Activity,
@@ -102,14 +103,46 @@ class AdapterItemsResolver (var context: Activity,
                 }
 
                 todayData.menu.forEach{
-                    resultList.add(FoodEntityAdapterItem(it, todayData)) // TODO: Do some evaluation of food
+                    resultList.add(FoodEntityAdapterItem(it, todayData, weekData.googlePlaceData)) // TODO: Do some evaluation of food
                 }
             }
         }
 
         resultList.sortWith(compareBy { it.preferenceEvaluation })
-
         listView.adapter = FoodEntityAdapter(context, resultList)
+    }
+
+    fun showRestaurants() {
+        val resultList: MutableList<RestaurantEntityAdapterItem> = mutableListOf()
+
+        restaurantsStore.forEach{
+            (place, weekData) -> run{
+                if (weekData == null) {
+                    println("Didn't find any menu for restaurant ${place.name}")
+                    Toast.makeText(context, "Didn't find any menu for restaurant ${place.name}", Toast.LENGTH_LONG).show()
+                    // TODO: show something which says sorry for place place we didn't find any menu, directly in adapter list
+                    return@run // end run for this restaurant
+                }
+
+                val todayData = weekData.findTodayMenu()
+
+                if (todayData == null) {
+                    println("Didn't find any today menu for restaurant ${place.name}")
+                    Toast.makeText(context, "Didn't find any menu for restaurant ${place.name}", Toast.LENGTH_LONG).show()
+                    // TODO: show something which says sorry for place place we didn't find any menu, directly in adapter list
+                    return@run // end run for this restaurant
+                }
+
+                resultList.add(RestaurantEntityAdapterItem(
+                        weekData.googlePlaceData,
+                        todayData.menu.map { it.price }.filterNotNull().average(),
+                        todayData.soup[0].price
+                ))
+            }
+        }
+
+        resultList.sortWith(compareBy { it.preferenceEvaluation })
+        listView.adapter = RestaurantEntityAdapter(context, resultList)
     }
 
 }

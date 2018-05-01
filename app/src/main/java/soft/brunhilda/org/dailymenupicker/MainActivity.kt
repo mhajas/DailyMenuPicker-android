@@ -2,52 +2,76 @@ package soft.brunhilda.org.dailymenupicker
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
+import android.view.Menu
+import android.view.MenuItem
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
-import noman.googleplaces.*
-import soft.brunhilda.org.dailymenupicker.collectors.rest.RESTFoodCollector
-import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
-import soft.brunhilda.org.dailymenupicker.entity.RestaurantDailyData
+import android.support.design.widget.NavigationView
+import android.support.v7.app.ActionBarDrawerToggle
+import kotlinx.android.synthetic.main.app_bar_main.*
+import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
+import soft.brunhilda.org.dailymenupicker.fragments.RestaurantsFragment
 
 
-class MainActivity : AppCompatActivity(), PlacesListener {
-    private var adapterItemsPreparer: AdapterItemsResolver? = null
-
-    override fun onPlacesFailure(e: PlacesException?) {
-
-    }
-
-    override fun onPlacesSuccess(places: MutableList<Place>?) {
-        adapterItemsPreparer?.addPlaces(places)
-
-        runOnUiThread {
-            adapterItemsPreparer?.showFood()
-        }
-    }
-
-    override fun onPlacesFinished() {
-
-    }
-
-    override fun onPlacesStart() {
-
-    }
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
 
-        adapterItemsPreparer = AdapterItemsResolver(this, main_list_view, mutableMapOf())
+        nav_view.setNavigationItemSelectedListener(this)
+
+        displaySelectedScreen(R.id.nav_restaurants) // First start TODO
 
         Hawk.init(this).build() // no idea where to put this
+    }
 
-        NRPlaces.Builder()
-                .listener(this)
-                .key("AIzaSyAMJQuIQAzLRHdCGbxhfsvr-q7lFEaPxPg")
-                .latlng(49.2227476, 16.584627)
-                .radius(20)
-                .type(PlaceType.RESTAURANT)
-                .build()
-                .execute()
+    fun displaySelectedScreen(id: Int){
+        when (id) {
+            R.id.nav_restaurants -> {
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, RestaurantsFragment()).commit()
+            }
+            R.id.nav_today_all_foods -> {
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment()).commit()
+            }
+        }
+        drawer_layout.closeDrawer(GravityCompat.START)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        when (item.itemId) {
+            R.id.action_settings -> return true
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+        displaySelectedScreen(item.itemId)
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.main, menu)
+        return true
     }
 }

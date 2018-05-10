@@ -17,12 +17,13 @@ import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 
 class TodayAllFoodFragment : Fragment() {
 
-    private val dataPreparer = NearestPlacesDataPreparer(this::placesPreparationIsFinished)
+    private val dataPreparer = NearestPlacesDataPreparer.getInstance()
     private val dataResolver = CachedRestDataResolver(this::placesResolvingIsFinished)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        dataPreparer.callback = this::placesPreparationIsFinished
         dataPreparer.findPlaces()
     }
 

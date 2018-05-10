@@ -4,10 +4,21 @@ import com.orhanobut.hawk.Hawk
 import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.collectors.rest.RetrofitApi
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
+import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 
-class CachedRestDataResolver(override val callback: (Map<Place, RestaurantWeekData?>) -> Unit, override val resolvedPlaces: MutableMap<Place, RestaurantWeekData?> = mutableMapOf())
-
+class CachedRestDataResolver(
+        override var callback: (Map<Place, RestaurantWeekData?>) -> Unit = {},
+        override val resolvedPlaces: MutableMap<Place, RestaurantWeekData?> = mutableMapOf())
     : DataResolver {
+
+    companion object {
+        private var mInstance: CachedRestDataResolver = CachedRestDataResolver()
+
+        @Synchronized
+        fun getInstance(): CachedRestDataResolver {
+            return mInstance
+        }
+    }
 
     val foodService = RetrofitApi().get()
 
@@ -27,7 +38,13 @@ class CachedRestDataResolver(override val callback: (Map<Place, RestaurantWeekDa
     }
 
     override fun resolvePlaces(places: List<Place>) {
+
+        val newResolvedPlaces: MutableMap<Place, RestaurantWeekData?> = mutableMapOf()
+
         places.forEach{
+            if (resolvedPlaces[it] != null) {
+
+            }
             resolvePlace(it)
         }
 

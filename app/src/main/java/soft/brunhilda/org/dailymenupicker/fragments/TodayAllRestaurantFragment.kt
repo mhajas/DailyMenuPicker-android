@@ -20,16 +20,18 @@ import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 
 class TodayAllRestaurantFragment : Fragment(){
 
-    private val dataPreparer = NearestPlacesDataPreparer(this::placesPreparationIsFinished)
-    private val dataResolver = CachedRestDataResolver(this::placesResolvingIsFinished)
+    private val dataPreparer = NearestPlacesDataPreparer.getInstance()
+    private val dataResolver = CachedRestDataResolver.getInstance()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        dataPreparer.callback = this::placesPreparationIsFinished
         dataPreparer.findPlaces()
     }
 
     fun placesPreparationIsFinished(places: List<Place>) {
+        dataResolver.callback = this::placesResolvingIsFinished
         dataResolver.resolvePlaces(places)
     }
 

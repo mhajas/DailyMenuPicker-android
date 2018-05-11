@@ -10,6 +10,7 @@ import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
+import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
@@ -19,6 +20,7 @@ class TodayAllFoodFragment : Fragment() {
     private val dataPreparer = NearestPlacesDataPreparer.getInstance()
     private val dataResolver = CachedRestDataResolver.getInstance()
     private val dataTransformer = FoodAdapterTransformer.getInstance()
+    private val dataEvaluator = FoodEvaluator.getInstance()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,7 +33,8 @@ class TodayAllFoodFragment : Fragment() {
     }
 
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
-        val adapterItems = dataTransformer.transform(places)
+        val adapterItems = dataEvaluator.evaluate(dataTransformer.transform(places))
+
         adapterItems.sortWith(compareBy { it.preferenceEvaluation })
 
         today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)

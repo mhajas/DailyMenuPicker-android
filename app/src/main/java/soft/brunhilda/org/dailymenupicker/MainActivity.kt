@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         displaySelectedScreen(R.id.nav_restaurants) // First start TODO
 
         Hawk.init(this).build() // no idea where to put this
+
+
     }
 
     fun displaySelectedScreen(id: Int){

@@ -23,7 +23,7 @@ class RestaurantEntityAdapter(
 			view = LayoutInflater.from(context).inflate(R.layout.list_item_restaurant, parent, false)
 		}
 
-		view?.findViewById<TextView>(R.id.restaurant_name)?.text = restaurant.googleData.name
+		view?.findViewById<TextView>(R.id.restaurant_name)?.text = restaurant.googlePlace.name
 		view?.findViewById<TextView>(R.id.restaurant_average_price)?.text = restaurant.averagePrice.toString() + " CZK"
 
 		if (restaurant.soupPrice == null) {

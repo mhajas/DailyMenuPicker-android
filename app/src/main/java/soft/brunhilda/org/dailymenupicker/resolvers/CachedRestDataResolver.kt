@@ -1,11 +1,9 @@
 package soft.brunhilda.org.dailymenupicker.resolvers
 
 import com.orhanobut.hawk.Hawk
-import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
-import soft.brunhilda.org.dailymenupicker.collectors.rest.RetrofitApi
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
-import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
+import soft.brunhilda.org.dailymenupicker.resolvers.retrofit.RetrofitApi
 
 class CachedRestDataResolver(
         override var callback: (Map<ComparablePlace, RestaurantWeekData?>) -> Unit = {},

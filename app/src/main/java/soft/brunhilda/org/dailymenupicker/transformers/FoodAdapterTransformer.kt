@@ -1,10 +1,8 @@
 package soft.brunhilda.org.dailymenupicker.transformers
 
-import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
-import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 
 class FoodAdapterTransformer : Transformer<FoodEntityAdapterItem> {
 

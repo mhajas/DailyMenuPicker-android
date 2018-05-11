@@ -53,6 +53,8 @@ class CachedRestDataResolver(
 
                 }
             })
+        } else {
+            resolvedPlaces[googlePlace] = restaurantWeekData
         }
     }
 

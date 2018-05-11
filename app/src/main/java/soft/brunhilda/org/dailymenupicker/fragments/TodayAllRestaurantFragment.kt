@@ -1,5 +1,6 @@
 package soft.brunhilda.org.dailymenupicker.fragments
 
+import android.arch.persistence.room.Room
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import kotlinx.android.synthetic.main.content_restaurant_today.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.RestaurantEntityAdapter
+import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.RestaurantEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
@@ -33,7 +35,11 @@ class TodayAllRestaurantFragment : Fragment(){
     }
 
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
-        val adapterItems = dataEvaluator.evaluate(dataTransformer.transform(places))
+        val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
+                .allowMainThreadQueries()
+                .build()
+        val adapterItems = dataEvaluator.evaluate(dataTransformer.transform(places), database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
+
         adapterItems.sortWith(compareBy { it.preferenceEvaluation })
 
         today_restaurant_list_view.adapter = RestaurantEntityAdapter(context, adapterItems)

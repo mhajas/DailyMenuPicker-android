@@ -3,7 +3,8 @@ package soft.brunhilda.org.dailymenupicker.entity
 import noman.googleplaces.Place
 
 data class RestaurantEntityAdapterItem (
-        val googleData: Place,
+        val googlePlace: Place,
         val averagePrice: Double,
-        val soupPrice: Int?
+        val soupPrice: Int?,
+        val restaurantDailyData: RestaurantDailyData
 ) : EvaluatableEntity() {}

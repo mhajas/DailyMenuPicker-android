@@ -23,5 +23,21 @@ enum class Ingredient {
     BRAVCOVINA,
 
     @SerializedName("hovadzina")
-    HOVADZINA
+    HOVADZINA;
+
+    val value: Int
+        get() = ordinal + 1
+
+    companion object {
+
+        private val ENUMS = Ingredient.values()
+
+        fun of(ingredient: Int?): Ingredient {
+            if (ingredient == null) {
+                throw RuntimeException("ingredient was null")
+            }
+            return ENUMS[ingredient - 1]
+        }
+
+    }
 }

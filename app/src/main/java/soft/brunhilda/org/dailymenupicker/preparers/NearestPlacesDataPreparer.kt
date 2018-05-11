@@ -2,10 +2,11 @@ package soft.brunhilda.org.dailymenupicker.preparers
 
 import android.location.Location
 import noman.googleplaces.*
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
 class NearestPlacesDataPreparer private constructor(
-        override var callback: (List<Place>) -> Unit = {},
-        override val preparedPlaces: MutableList<Place> = mutableListOf(),
+        override var callback: (List<ComparablePlace>) -> Unit = {},
+        override val preparedPlaces: MutableList<ComparablePlace> = mutableListOf(),
         override var state: DataPreparationState = DataPreparationState.IN_PROGRESS)
 : DataPreparer, PlacesListener {
 
@@ -20,7 +21,9 @@ class NearestPlacesDataPreparer private constructor(
         }
     }
 
-    override fun findPlaces() {
+    override fun findPlaces(callback: (List<ComparablePlace>) -> Unit) {
+        this.callback = callback
+
         val newPosition = getCurrentPosition()
 
         if (lastPosition != null) {
@@ -51,7 +54,7 @@ class NearestPlacesDataPreparer private constructor(
         lastPosition = newPosition
     }
 
-    fun getCurrentPosition(): Location {
+    private fun getCurrentPosition(): Location {
         val returnVal = Location("")
         returnVal.latitude = 49.2227476
         returnVal.longitude = 16.584627
@@ -59,7 +62,7 @@ class NearestPlacesDataPreparer private constructor(
         return returnVal
     }
 
-    fun getDistanceBetweenTwoPositions(first: Location, second: Location?): Float {
+    private fun getDistanceBetweenTwoPositions(first: Location, second: Location?): Float {
 
         if (second == null) {
             return 0.1F
@@ -74,7 +77,7 @@ class NearestPlacesDataPreparer private constructor(
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {
         if (places != null) {
-            preparedPlaces.addAll(places)
+            preparedPlaces.addAll(places.map { ComparablePlace(it) })
         }
     }
 

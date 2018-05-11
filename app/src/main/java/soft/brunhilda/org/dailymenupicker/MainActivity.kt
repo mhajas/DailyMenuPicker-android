@@ -10,6 +10,7 @@ import android.view.MenuItem
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllRestaurantFragment
 
@@ -74,4 +75,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
+
 }

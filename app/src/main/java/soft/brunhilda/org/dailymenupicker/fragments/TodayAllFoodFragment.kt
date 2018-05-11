@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.content_food_today.*
 import noman.googleplaces.*
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
@@ -25,16 +26,14 @@ class TodayAllFoodFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dataPreparer.callback = this::placesPreparationIsFinished
-        dataPreparer.findPlaces()
+        dataPreparer.findPlaces(this::placesPreparationIsFinished)
     }
 
-    fun placesPreparationIsFinished(places: List<Place>) {
-        dataResolver.callback = this::placesResolvingIsFinished
-        dataResolver.resolvePlaces(places)
+    private fun placesPreparationIsFinished(places: List<ComparablePlace>) {
+        dataResolver.resolvePlaces(places, this::placesResolvingIsFinished)
     }
 
-    fun placesResolvingIsFinished(places: Map<Place, RestaurantWeekData?>) {
+    private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
         val adapterItems = dataTransformer.transform(places)
         adapterItems.sortWith(compareBy { it.preferenceEvaluation })
 

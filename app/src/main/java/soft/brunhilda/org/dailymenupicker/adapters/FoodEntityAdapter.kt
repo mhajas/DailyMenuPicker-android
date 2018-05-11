@@ -1,4 +1,4 @@
-package soft.brunhilda.org.dailymenupicker
+package soft.brunhilda.org.dailymenupicker.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 
 class FoodEntityAdapter(

@@ -2,27 +2,28 @@ package soft.brunhilda.org.dailymenupicker.resolvers
 
 import com.orhanobut.hawk.Hawk
 import noman.googleplaces.Place
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.collectors.rest.RetrofitApi
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 
 class CachedRestDataResolver(
-        override var callback: (Map<Place, RestaurantWeekData?>) -> Unit = {},
-        override val resolvedPlaces: MutableMap<Place, RestaurantWeekData?> = mutableMapOf())
+        override var callback: (Map<ComparablePlace, RestaurantWeekData?>) -> Unit = {},
+        override val resolvedPlaces: MutableMap<ComparablePlace, RestaurantWeekData?> = mutableMapOf())
     : DataResolver {
 
+    private val foodService = RetrofitApi().get()
     companion object {
-        private var mInstance: CachedRestDataResolver = CachedRestDataResolver()
 
+        private var mInstance: CachedRestDataResolver = CachedRestDataResolver()
         @Synchronized
         fun getInstance(): CachedRestDataResolver {
             return mInstance
         }
+
     }
 
-    val foodService = RetrofitApi().get()
-
-    private fun resolvePlace(googlePlace: Place) {
+    private fun resolvePlace(googlePlace: ComparablePlace) {
         var restaurantWeekData: RestaurantWeekData? = Hawk.get(googlePlace.placeId, null)
 
         if (restaurantWeekData == null) {
@@ -37,15 +38,21 @@ class CachedRestDataResolver(
         resolvedPlaces[googlePlace] = restaurantWeekData
     }
 
-    override fun resolvePlaces(places: List<Place>) {
+    override fun resolvePlaces(places: List<ComparablePlace>, callback: (Map<ComparablePlace, RestaurantWeekData?>) -> Unit) {
+        this.callback = callback
 
-        val newResolvedPlaces: MutableMap<Place, RestaurantWeekData?> = mutableMapOf()
+        val oldResolvedPlaces: MutableMap<ComparablePlace, RestaurantWeekData?> = resolvedPlaces.toMutableMap()
+        resolvedPlaces.clear()
 
-        places.forEach{
-            if (resolvedPlaces[it] != null) {
+        places.forEach { place ->
+            run {
+                if (oldResolvedPlaces[place] != null) {
+                    resolvedPlaces[place] = oldResolvedPlaces[place]
+                    return@forEach
+                }
 
+                resolvePlace(place)
             }
-            resolvePlace(it)
         }
 
         callback(resolvedPlaces)

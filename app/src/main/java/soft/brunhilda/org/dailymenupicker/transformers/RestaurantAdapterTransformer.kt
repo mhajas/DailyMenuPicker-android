@@ -2,6 +2,7 @@ package soft.brunhilda.org.dailymenupicker.transformers
 
 import android.widget.Toast
 import noman.googleplaces.Place
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantEntityAdapterItem
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
@@ -17,7 +18,7 @@ class RestaurantAdapterTransformer : Transformer<RestaurantEntityAdapterItem> {
         }
     }
 
-    override fun transform(from: Map<Place, RestaurantWeekData?>): MutableList<RestaurantEntityAdapterItem> {
+    override fun transform(from: Map<ComparablePlace, RestaurantWeekData?>): MutableList<RestaurantEntityAdapterItem> {
         val resultList: MutableList<RestaurantEntityAdapterItem> = mutableListOf()
 
         from.forEach { (place, weekData) ->

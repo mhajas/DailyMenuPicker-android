@@ -1,6 +1,5 @@
 package soft.brunhilda.org.dailymenupicker.preparers
 
-import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
 interface DataPreparer {

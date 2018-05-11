@@ -5,13 +5,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.content_food_today.*
-import noman.googleplaces.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
-import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.R
-import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
+import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver

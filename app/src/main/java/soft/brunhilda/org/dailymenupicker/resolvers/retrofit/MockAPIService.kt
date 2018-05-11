@@ -1,4 +1,4 @@
-package soft.brunhilda.org.dailymenupicker.collectors.rest
+package soft.brunhilda.org.dailymenupicker.resolvers.retrofit
 
 import retrofit2.Call
 import retrofit2.http.GET

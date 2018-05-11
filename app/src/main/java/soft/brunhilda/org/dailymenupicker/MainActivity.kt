@@ -10,7 +10,6 @@ import android.view.MenuItem
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllRestaurantFragment
 

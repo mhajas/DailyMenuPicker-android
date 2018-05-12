@@ -4,10 +4,10 @@ import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
 interface DataPreparer {
 
-    val callback: (List<ComparablePlace>) -> Unit
-    val preparedPlaces: List<ComparablePlace>
+    val callback: (Set<ComparablePlace>) -> Unit
+    val preparedPlaces: Set<ComparablePlace>
     var state: DataPreparationState
-    fun findPlaces(callback: (List<ComparablePlace>) -> Unit)
+    fun findPlaces(callback: (Set<ComparablePlace>) -> Unit)
 }
 
 enum class DataPreparationState { IN_PROGRESS, FINISHED }

@@ -7,20 +7,20 @@ import java.util.concurrent.TimeUnit
 
 
 class RetrofitApi {
-	private val url = "http://demo6784082.mockable.io/"
+    private val url = "http://demo6784082.mockable.io/"
 
-	val okHttpClient = OkHttpClient.Builder()
-			.readTimeout(500, TimeUnit.MILLISECONDS)
-			.connectTimeout(2, TimeUnit.SECONDS)
-			.build()
+    val okHttpClient = OkHttpClient.Builder()
+            .readTimeout(2, TimeUnit.SECONDS)
+            .connectTimeout(2, TimeUnit.SECONDS)
+            .build()
 
-	private var retrofit: Retrofit = Retrofit.Builder()
-			.baseUrl(url)
-			.addConverterFactory(GsonConverterFactory.create())
-			.client(okHttpClient)
-			.build()
+    private var retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
 
-	fun get(): MockAPIService {
-		return retrofit.create(MockAPIService::class.java)
-	}
+    fun get(): MockAPIService {
+        return retrofit.create(MockAPIService::class.java)
+    }
 }

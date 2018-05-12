@@ -6,6 +6,6 @@ import retrofit2.http.Path
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekTransferData
 
 interface MockAPIService {
-	@GET("restaurant/{placeID}")
-	fun getData(@Path("placeID") placeID: String): Call<RestaurantWeekTransferData>
+    @GET("restaurant/{placeID}")
+    fun getData(@Path("placeID") placeID: String): Call<RestaurantWeekTransferData>
 }

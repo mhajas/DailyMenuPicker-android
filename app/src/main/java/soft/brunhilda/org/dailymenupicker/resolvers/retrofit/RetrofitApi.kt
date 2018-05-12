@@ -10,7 +10,7 @@ class RetrofitApi {
 	private val url = "http://demo6784082.mockable.io/"
 
 	val okHttpClient = OkHttpClient.Builder()
-			.readTimeout(500, TimeUnit.SECONDS)
+			.readTimeout(500, TimeUnit.MILLISECONDS)
 			.connectTimeout(2, TimeUnit.SECONDS)
 			.build()
 

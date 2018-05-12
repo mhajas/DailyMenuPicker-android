@@ -7,9 +7,9 @@
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight=".80"
-        android:id="@+id/test_restaurants"
+        android:id="@+id/detail_of_restaurant"
         android:textSize="18sp"
-        android:text="List of the restaurants"
+        android:text="Detail of the restaurants"
         />
 
 </android.support.constraint.ConstraintLayout>

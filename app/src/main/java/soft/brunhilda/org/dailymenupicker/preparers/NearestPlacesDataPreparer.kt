@@ -1,12 +1,13 @@
 package soft.brunhilda.org.dailymenupicker.preparers
 
 import android.location.Location
+import com.orhanobut.hawk.Hawk
 import noman.googleplaces.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
 class NearestPlacesDataPreparer private constructor(
-        override var callback: (List<ComparablePlace>) -> Unit = {},
-        override val preparedPlaces: MutableList<ComparablePlace> = mutableListOf(),
+        override var callback: (Set<ComparablePlace>) -> Unit = {},
+        override val preparedPlaces: MutableSet<ComparablePlace> = mutableSetOf(),
         override var state: DataPreparationState = DataPreparationState.IN_PROGRESS)
 : DataPreparer, PlacesListener {
 
@@ -21,10 +22,21 @@ class NearestPlacesDataPreparer private constructor(
         }
     }
 
-    override fun findPlaces(callback: (List<ComparablePlace>) -> Unit) {
+    override fun findPlaces(callback: (Set<ComparablePlace>) -> Unit) {
         this.callback = callback
 
         val newPosition = getCurrentPosition()
+
+        if (lastPosition == null) {
+            lastPosition = Hawk.get("lastPosition")
+
+            val cachedData: Set<ComparablePlace>? = Hawk.get("lastPositionResult", null)
+
+            if (cachedData != null) {
+                println("Find cached data in Hawk")
+                preparedPlaces.addAll(cachedData)
+            }
+        }
 
         if (lastPosition != null) {
 
@@ -46,12 +58,13 @@ class NearestPlacesDataPreparer private constructor(
                 .listener(this)
                 .key("AIzaSyAMJQuIQAzLRHdCGbxhfsvr-q7lFEaPxPg")
                 .latlng(newPosition.latitude, newPosition.longitude)
-                .radius(20)
+                .radius(1000)
                 .type(PlaceType.RESTAURANT)
                 .build()
                 .execute()
 
         lastPosition = newPosition
+        Hawk.put("lastPosition", newPosition)
     }
 
     private fun getCurrentPosition(): Location {
@@ -77,12 +90,15 @@ class NearestPlacesDataPreparer private constructor(
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {
         if (places != null) {
+            places.forEach{ println("Found restaurant '${it.placeId}' name: ${it.name}")}
             preparedPlaces.addAll(places.map { ComparablePlace(it) })
         }
     }
 
     override fun onPlacesFinished() {
         state = DataPreparationState.FINISHED
+
+        Hawk.put("lastPositionResult", preparedPlaces)
 
         callback(preparedPlaces)
     }

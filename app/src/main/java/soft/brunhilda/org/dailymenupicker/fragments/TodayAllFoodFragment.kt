@@ -20,7 +20,6 @@ import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 class TodayAllFoodFragment : Fragment() {
 
     private val dataPreparer = NearestPlacesDataPreparer.getInstance()
-    private val dataResolver = CachedRestDataResolver.getInstance()
     private val dataTransformer = FoodAdapterTransformer.getInstance()
     private val dataEvaluator = FoodEvaluator.getInstance()
 
@@ -30,19 +29,25 @@ class TodayAllFoodFragment : Fragment() {
         dataPreparer.findPlaces(this::placesPreparationIsFinished)
     }
 
-    private fun placesPreparationIsFinished(places: List<ComparablePlace>) {
-        dataResolver.resolvePlaces(places, this::placesResolvingIsFinished)
+    private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
+        val dataResolver = CachedRestDataResolver()
+        dataResolver.resolvePlaces(places.toList(), this::placesResolvingIsFinished)
     }
 
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
-        val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                .allowMainThreadQueries()
-                .build()
-        val adapterItems = dataEvaluator.evaluate(dataTransformer.transform(places), database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
 
-        adapterItems.sortWith(compareBy { it.preferenceEvaluation })
+        if (context != null) {
+            var adapterItems = dataTransformer.transform(places)
+            val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
+                    .allowMainThreadQueries()
+                    .build()
+            adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
 
-        today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
+            adapterItems.sortWith(compareBy { it.preferenceEvaluation })
+            today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
+        }
+
+
     }
 
 

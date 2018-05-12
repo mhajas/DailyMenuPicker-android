@@ -43,7 +43,7 @@ class TodayAllFoodFragment : Fragment() {
                     .build()
             adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
 
-            adapterItems.sortWith(compareBy { it.preferenceEvaluation })
+            adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
             today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
         }
 

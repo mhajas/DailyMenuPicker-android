@@ -12,5 +12,10 @@
             android:id="@+id/nav_today_all_foods"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/today_all_foods" />
+
+        <item
+            android:id="@+id/nav_favorite_ingredients"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/favorite_ingredients_header" />
     </group>
 </menu>

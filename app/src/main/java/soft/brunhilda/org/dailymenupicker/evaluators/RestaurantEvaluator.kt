@@ -37,7 +37,7 @@ class RestaurantEvaluator : Evaluator<RestaurantEntityAdapterItem> {
 
                 if (containedIngrediets != null && it.tags.isNotEmpty()) {
                     // score 0 - 5 based on how many of ingredients contained in food is favorite for user
-                    foodEvaluations.add(5.0 * (containedIngrediets.size / it.tags.size)) // can't be null because if it is null, the intersection will be null
+                    foodEvaluations.add(5.0 * (containedIngrediets.size.toDouble() / it.tags.size)) // can't be null because if it is null, the intersection will be null
                 }
             }
 

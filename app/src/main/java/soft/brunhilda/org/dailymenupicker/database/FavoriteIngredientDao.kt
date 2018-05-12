@@ -9,10 +9,10 @@ import android.arch.persistence.room.Query
 interface FavoriteIngredientDao {
 
     @Insert
-    fun insert(restaurant: FavoriteIngredientEntity)
+    fun insert(favoriteIngredientEntity: FavoriteIngredientEntity)
 
     @Delete
-    fun delete(restaurant: FavoriteIngredientEntity)
+    fun delete(favoriteIngredientEntity: FavoriteIngredientEntity)
 
     @Query("SELECT * FROM favorite_ingredients")
     fun findAll(): List<FavoriteIngredientEntity>

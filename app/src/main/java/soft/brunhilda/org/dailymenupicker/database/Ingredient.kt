@@ -5,25 +5,34 @@ import com.google.gson.annotations.SerializedName
 enum class Ingredient {
 
     @SerializedName("ryza")
-    RYZA,
+    RICE,
 
     @SerializedName("zemiaky")
-    ZEMIAKY,
+    POTATO,
 
     @SerializedName("knedla")
-    KNEDLA,
+    DUMPLING,
 
     @SerializedName("zelenina")
-    ZELENINA,
+    VEGETABLE,
 
     @SerializedName("kuracina")
-    KURACINA,
+    CHICKEN,
 
     @SerializedName("bravcovina")
-    BRAVCOVINA,
+    PORK,
 
     @SerializedName("hovadzina")
-    HOVADZINA;
+    BEEF,
+
+    @SerializedName("ryba")
+    FISH,
+
+    @SerializedName("cestovina")
+    PASTA,
+
+    @SerializedName("sladke")
+    SWEET;
 
     val value: Int
         get() = ordinal + 1

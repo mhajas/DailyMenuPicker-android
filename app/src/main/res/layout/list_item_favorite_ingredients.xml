@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@drawable/card_background"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight=".85"
+            android:id="@+id/ingredient_name"
+            android:textSize="18sp"
+            tools:text="Hovädzina na prírodno s knedľu"
+            />
+
+        <CheckBox
+            android:layout_width="0dp"
+            android:layout_weight="0.15"
+            android:id="@+id/ingredient_checkbox"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

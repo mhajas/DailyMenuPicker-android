@@ -25,6 +25,7 @@ class RestaurantEntityAdapter(
 
         view?.findViewById<TextView>(R.id.restaurant_name)?.text = restaurant.googlePlace.name
         view?.findViewById<TextView>(R.id.restaurant_average_price)?.text = restaurant.averagePrice.toString() + " CZK"
+        view?.findViewById<TextView>(R.id.restaurant_evaluation)?.text = restaurant.preferenceEvaluation.toString()
 
         if (restaurant.soupPrice == null) {
             view?.findViewById<TextView>(R.id.restaurant_soup_price)?.text = "v cene"

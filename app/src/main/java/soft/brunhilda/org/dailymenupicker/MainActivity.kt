@@ -10,6 +10,7 @@ import android.view.MenuItem
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import soft.brunhilda.org.dailymenupicker.fragments.FavoriteIngredientsFragment
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllRestaurantFragment
 
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_today_all_foods -> {
                 supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment()).commit()
+            }
+            R.id.nav_favorite_ingredients -> {
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavoriteIngredientsFragment()).commit()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

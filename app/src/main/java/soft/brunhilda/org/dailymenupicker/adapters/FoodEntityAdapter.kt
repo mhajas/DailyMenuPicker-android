@@ -34,6 +34,7 @@ class FoodEntityAdapter(
         }
 
         view?.findViewById<TextView>(R.id.restaurant_name)?.text = food.googlePlace.name
+        view?.findViewById<TextView>(R.id.dayfood_evaluation)?.text = food.preferenceEvaluation.toString()
 
 
         return view

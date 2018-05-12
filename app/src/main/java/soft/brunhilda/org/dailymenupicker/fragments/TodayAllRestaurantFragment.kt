@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.content_restaurant_today.*
+import kotlinx.android.synthetic.main.content_all_restaurants.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.RestaurantEntityAdapter
@@ -16,6 +16,8 @@ import soft.brunhilda.org.dailymenupicker.evaluators.RestaurantEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.RestaurantAdapterTransformer
+import android.widget.AdapterView
+
 
 class TodayAllRestaurantFragment : Fragment(){
 
@@ -44,13 +46,24 @@ class TodayAllRestaurantFragment : Fragment(){
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
             today_restaurant_list_view.adapter = RestaurantEntityAdapter(context, adapterItems)
-
+            today_restaurant_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+               /* val fragment = ParticularRestaurantFragment()
+                fragment.arguments.putString("googleId",adapterItems[position].googlePlace.placeId)*/
+                val fragment = ParticularRestaurantFragment()
+                fragment.arguments = Bundle()
+                fragment.arguments.putString("googleID",adapterItems[position].googlePlace.placeId)
+                activity.supportFragmentManager
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.content_main, fragment)
+                        .commit()
+            };
         }
 
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.content_restaurant_today, container, false)
+        return inflater?.inflate(R.layout.content_all_restaurants, container, false)
     }
 
 }

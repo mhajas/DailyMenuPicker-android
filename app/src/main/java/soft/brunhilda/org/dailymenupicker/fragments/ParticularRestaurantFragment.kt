@@ -9,15 +9,27 @@ import android.view.ViewGroup
 import soft.brunhilda.org.dailymenupicker.R
 import android.widget.Toast
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.LinearLayoutManager
+import android.widget.LinearLayout
+import kotlinx.android.synthetic.main.content_scrolling.*
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
+import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter_recycler
 import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
 import soft.brunhilda.org.dailymenupicker.database.FavoriteRestaurantEntity
-
+import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
+import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
+import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
+import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
+import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 
 class ParticularRestaurantFragment : Fragment() {
     private var isFavourite = false;
     private var googleID: String = ""
     private var name: String = ""
 
+    private val dataPreparer = NearestPlacesDataPreparer.getInstance()
+    private val dataTransformer = FoodAdapterTransformer.getInstance()
+    private val dataEvaluator = FoodEvaluator.getInstance()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +63,31 @@ class ParticularRestaurantFragment : Fragment() {
         Toast.makeText(activity, "Place name: $name placeID: $googleID",
             Toast.LENGTH_LONG).show()
 
-        //TODO
+        //TODO change to find places only for this restaurants and add NAME to the toolbar
+        dataPreparer.findPlaces(this::placesPreparationIsFinished)
+    }
+
+    private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
+        val dataResolver = CachedRestDataResolver()
+        dataResolver.resolvePlaces(places.toList(), this::placesResolvingIsFinished)
+    }
+
+    private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
+
+        if (context != null) {
+            var adapterItems = dataTransformer.transform(places)
+            val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
+                    .allowMainThreadQueries()
+                    .build()
+            adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
+
+            adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
+
+
+            recyclerView1.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            var adapter = FoodEntityAdapter_recycler(adapterItems)
+            recyclerView1.adapter = adapter
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

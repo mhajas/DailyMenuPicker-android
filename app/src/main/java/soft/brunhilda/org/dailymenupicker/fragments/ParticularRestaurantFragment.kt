@@ -6,24 +6,74 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.content_favorite_ingredients.*
 import soft.brunhilda.org.dailymenupicker.R
-import soft.brunhilda.org.dailymenupicker.adapters.IngredientEntityAdapter
-import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
-import soft.brunhilda.org.dailymenupicker.database.Ingredient
 import android.widget.Toast
-import android.R.attr.data
+import android.support.design.widget.FloatingActionButton
+import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
+import soft.brunhilda.org.dailymenupicker.database.FavoriteRestaurantEntity
+
 
 class ParticularRestaurantFragment : Fragment() {
+    private var isFavourite = false;
+    private var googleID: String = ""
+    private var name: String = ""
+
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val googleID = this.arguments.getString("googleID",null);
+        var database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
+                .allowMainThreadQueries()
+                .build()
+        googleID = this.arguments.getString("googleID",null);
+        name = this.arguments.getString("restaurantName",null);
 
-        Toast.makeText(activity, "Place id is: $googleID",
-                Toast.LENGTH_LONG).show()
+        val myFab = view?.findViewById(R.id.fab) as FloatingActionButton
+        if(isPlaceInFavourite(database)){
+            myFab.setImageResource(android.R.drawable.ic_delete);
+        }else{
+            myFab.setImageResource(android.R.drawable.ic_menu_save);
+        }
+        myFab.setOnClickListener {
+            if (isPlaceInFavourite(database)) {
+                removeFromDB(database)
+                Toast.makeText(activity, "Place was removed from the favourite places",
+                        Toast.LENGTH_LONG).show()
+                isFavourite = false
+                myFab.setImageResource(android.R.drawable.ic_menu_save);
+            } else {
+                addToDB(database)
+                Toast.makeText(activity, "Place was added to the favourite places",
+                        Toast.LENGTH_LONG).show()
+                isFavourite = true
+                myFab.setImageResource(android.R.drawable.ic_delete);
+            }
+        }
+        Toast.makeText(activity, "Place name: $name placeID: $googleID",
+            Toast.LENGTH_LONG).show()
+
+        //TODO
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.content_particular_restaurant, container, false)
+    }
+
+    private fun isPlaceInFavourite(database: DailyMenuPickerDatabase): Boolean {
+        val favourite = database.favoriteRestaurantDao().getByPlaceId(googleID)
+        return favourite != null
+    }
+
+    private fun addToDB(database: DailyMenuPickerDatabase) {
+        val restaurantEntity: FavoriteRestaurantEntity = FavoriteRestaurantEntity()
+        restaurantEntity.name = name
+        restaurantEntity.placeId = googleID
+        database.favoriteRestaurantDao().insert(restaurantEntity)
+    }
+
+    private fun removeFromDB(database: DailyMenuPickerDatabase) {
+        val favourite = database.favoriteRestaurantDao().getByPlaceId(googleID);
+        if (favourite != null) {
+            database.favoriteRestaurantDao().delete(favourite)
+        }
     }
 }

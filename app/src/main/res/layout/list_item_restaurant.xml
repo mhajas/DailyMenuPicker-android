@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/restaurant_name"
-        android:textSize="18sp"
+        android:textSize="14sp"
+        android:textStyle="bold"
         tools:text="Najlepsia restauracia"
         />
 
@@ -23,18 +24,18 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".80"
+            android:layout_weight=".75"
             android:text="Priemerna cena"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textStyle="italic"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".20"
+            android:layout_weight=".25"
             android:id="@+id/restaurant_average_price"
-            android:textSize="13sp"
+            android:textSize="12sp"
             tools:text="50 CZK"
             />
 
@@ -46,18 +47,18 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".80"
+            android:layout_weight=".75"
             android:text="Cena polievky"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textStyle="italic"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".20"
+            android:layout_weight=".25"
             android:id="@+id/restaurant_soup_price"
-            android:textSize="13sp"
+            android:textSize="12sp"
             tools:text="v cene"
             />
 
@@ -70,16 +71,16 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".80"
+            android:layout_weight=".75"
             android:text="Hodnotenie"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textStyle="italic"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight=".20"
+            android:layout_weight=".25"
             android:id="@+id/restaurant_evaluation"
             android:textSize="13sp"
             tools:text="v cene"

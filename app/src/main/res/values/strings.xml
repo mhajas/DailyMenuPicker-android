@@ -6,11 +6,11 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Nastavenia</string>
     <string name="all_restaurants">Reštaurácie v okolí</string>
-    <string name="today_all_foods">Dnešne jedla v okolí</string>
+    <string name="today_all_foods">Dnešné jedlá v okolí</string>
     <string name="favorite_ingredients">Obľúbené ingrediencie</string>
     <string name="rice">Rýže</string>
     <string name="potato">Brambory</string>
-    <string name="dumpling">Knedlík</string>
+    <string name="dumpling">Knedlíky</string>
     <string name="vegetable">Zelenina</string>
     <string name="chicken">Kuře</string>
     <string name="pork">Vepřové</string>

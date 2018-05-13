@@ -8,6 +8,8 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantEntityAdapterItem
+import java.text.NumberFormat
+import java.util.*
 
 class RestaurantEntityAdapter(
         private val context: Context,
@@ -23,14 +25,17 @@ class RestaurantEntityAdapter(
             view = LayoutInflater.from(context).inflate(R.layout.list_item_restaurant, parent, false)
         }
 
+        val currencyFormater = NumberFormat.getCurrencyInstance()
+        currencyFormater.currency = Currency.getInstance("CZK")
+
         view?.findViewById<TextView>(R.id.restaurant_name)?.text = restaurant.googlePlace.name
-        view?.findViewById<TextView>(R.id.restaurant_average_price)?.text = restaurant.averagePrice.toString() + " CZK"
-        view?.findViewById<TextView>(R.id.restaurant_evaluation)?.text = restaurant.preferenceEvaluation.toString()
+        view?.findViewById<TextView>(R.id.restaurant_average_price)?.text =  currencyFormater.format(restaurant.averagePrice)
+        view?.findViewById<TextView>(R.id.restaurant_evaluation)?.text =  String.format("%.2f", restaurant.preferenceEvaluation)
 
         if (restaurant.soupPrice == null) {
             view?.findViewById<TextView>(R.id.restaurant_soup_price)?.text = "v cene"
         } else {
-            view?.findViewById<TextView>(R.id.restaurant_soup_price)?.text = restaurant.soupPrice.toString() + " CZK"
+            view?.findViewById<TextView>(R.id.restaurant_soup_price)?.text = currencyFormater.format(restaurant.soupPrice)
         }
 
 

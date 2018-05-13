@@ -27,7 +27,8 @@
             android:layout_width="0dp"
             android:layout_weight=".7"
             android:id="@+id/ingredient_name"
-            android:textSize="18sp"
+            android:textSize="14sp"
+            android:textStyle="bold"
             tools:text="Hovädzina na prírodno s knedľu"
             />
 

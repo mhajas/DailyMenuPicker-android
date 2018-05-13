@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
@@ -30,8 +31,10 @@ class IngredientEntityAdapter(
         }
 
         val identifier = context.resources.getIdentifier(ingredient.toString().toLowerCase(), "string", context.packageName)
+        val iconIdentifier = context.resources.getIdentifier("ic_" + ingredient.toString().toLowerCase(), "drawable", context.packageName)
 
         view?.findViewById<TextView>(R.id.ingredient_name)?.text = context.resources.getString(identifier)
+        view?.findViewById<ImageView>(R.id.ingredient_icon)?.setImageResource(iconIdentifier)
 
         if (favoriteIngredients.map { it.ingredient }.contains(ingredient)) {
             view?.findViewById<CheckBox>(R.id.ingredient_checkbox)?.isChecked = true

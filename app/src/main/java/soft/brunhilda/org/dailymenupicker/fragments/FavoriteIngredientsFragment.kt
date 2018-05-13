@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.CheckBox
 import kotlinx.android.synthetic.main.content_favorite_ingredients.*
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.IngredientEntityAdapter
@@ -22,6 +24,10 @@ class FavoriteIngredientsFragment : Fragment() {
                 .build()
 
         favorite_ingredients_list_view.adapter = IngredientEntityAdapter(context, Ingredient.values().toList(), database)
+
+        favorite_ingredients_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            view?.findViewById<CheckBox>(R.id.ingredient_checkbox)?.performClick()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {

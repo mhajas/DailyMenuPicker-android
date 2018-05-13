@@ -1,5 +1,8 @@
 package soft.brunhilda.org.dailymenupicker.fragments
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.arch.persistence.room.Room
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.LinearLayout
+import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.android.synthetic.main.content_all_restaurants.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
@@ -19,6 +24,15 @@ import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.RestaurantAdapterTransformer
 
 class FavouriteRestaurantsFragment : Fragment() {
+
+    companion object {
+        private var mInstance: FavouriteRestaurantsFragment = FavouriteRestaurantsFragment()
+
+        @Synchronized
+        fun getInstance(): FavouriteRestaurantsFragment {
+            return mInstance
+        }
+    }
 
     private val dataTransformer = RestaurantAdapterTransformer.getInstance()
     private val dataEvaluator = RestaurantEvaluator.getInstance()
@@ -61,8 +75,34 @@ class FavouriteRestaurantsFragment : Fragment() {
                         .addToBackStack(null)
                         .replace(R.id.content_main, fragment)
                         .commit()
-            };
-        }
+            }
+
+            val animatedView: SpinKitView? = view?.findViewById(R.id.restaurants_loading_animation)
+            val params = animatedView?.layoutParams as LinearLayout.LayoutParams
+            val animator = ValueAnimator.ofInt(params.topMargin, -230)
+
+            animatedView.animate()
+                    .alpha(0.0f)
+                    .setDuration(1200)
+
+            today_restaurant_list_view.animate()
+                    .alpha(1f)
+                    .setDuration(1000)
+
+            animator.addUpdateListener { valueAnimator ->
+                params.topMargin = valueAnimator?.animatedValue as Int
+                animatedView.requestLayout()
+            }
+
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    restaurants_loading_animation?.visibility = View.GONE
+                }
+            })
+
+            animator.duration = 1000
+            animator.start()
+    }
 
     }
 

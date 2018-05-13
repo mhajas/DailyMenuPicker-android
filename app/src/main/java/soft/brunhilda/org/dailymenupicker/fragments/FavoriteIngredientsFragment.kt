@@ -16,6 +16,16 @@ import soft.brunhilda.org.dailymenupicker.database.Ingredient
 
 class FavoriteIngredientsFragment : Fragment() {
 
+    companion object {
+        private var mInstance: FavoriteIngredientsFragment = FavoriteIngredientsFragment()
+
+        @Synchronized
+        fun getInstance(): FavoriteIngredientsFragment {
+            return mInstance
+        }
+    }
+
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

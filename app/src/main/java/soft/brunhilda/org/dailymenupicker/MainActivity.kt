@@ -40,16 +40,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun displaySelectedScreen(id: Int){
         when (id) {
             R.id.nav_restaurants -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllRestaurantFragment()).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllRestaurantFragment.getInstance()).commit()
             }
             R.id.nav_today_all_foods -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment()).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment.getInstance()).commit()
             }
             R.id.nav_favorite_ingredients -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavoriteIngredientsFragment()).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavoriteIngredientsFragment.getInstance()).commit()
             }
             R.id.nav_favorite_restaurants -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavouriteRestaurantsFragment()).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavouriteRestaurantsFragment.getInstance()).commit()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

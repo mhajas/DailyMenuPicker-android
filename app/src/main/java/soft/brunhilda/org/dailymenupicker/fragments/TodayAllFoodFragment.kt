@@ -23,11 +23,6 @@ import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 
-
-
-
-
-
 class TodayAllFoodFragment : Fragment() {
 
     companion object {
@@ -38,7 +33,6 @@ class TodayAllFoodFragment : Fragment() {
             return mInstance
         }
     }
-
 
     private val dataPreparer = NearestPlacesDataPreparer.getInstance()
     private val dataTransformer = FoodAdapterTransformer.getInstance()

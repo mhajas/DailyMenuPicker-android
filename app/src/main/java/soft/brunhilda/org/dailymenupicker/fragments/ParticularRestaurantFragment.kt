@@ -11,6 +11,9 @@ import android.widget.Toast
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.content_scrolling.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter_recycler
@@ -21,6 +24,10 @@ import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.MarkerOptions
+
+
 
 class ParticularRestaurantFragment : Fragment() {
     private var isFavourite = false;
@@ -65,6 +72,7 @@ class ParticularRestaurantFragment : Fragment() {
 
         //TODO change to find places only for this restaurants and add NAME to the toolbar
         dataPreparer.findPlaces(this::placesPreparationIsFinished)
+        showMap()
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
@@ -110,6 +118,33 @@ class ParticularRestaurantFragment : Fragment() {
         val favourite = database.favoriteRestaurantDao().getByPlaceId(googleID);
         if (favourite != null) {
             database.favoriteRestaurantDao().delete(favourite)
+        }
+    }
+
+    private fun showMap(){
+        System.out.println("Showing map")
+        val mSupportMapFragment = MapFragment.newInstance();
+        activity.fragmentManager.beginTransaction().replace(R.id.mapwhere, mSupportMapFragment).commit();
+
+        if (mSupportMapFragment != null) {
+            mSupportMapFragment.getMapAsync(this::mapReady);
+        }
+    }
+
+    private fun mapReady(googleMap: GoogleMap){
+        System.out.println("Showing in map ready function")
+
+        if (googleMap != null) {
+            googleMap.getUiSettings().setAllGesturesEnabled(true);
+            val marker_latlng: LatLng = LatLng(49.2227476, 16.584627) //TODO
+            val cameraPosition: CameraPosition = CameraPosition.Builder()
+                    .target(marker_latlng)
+                    .zoom(15.0f).build()
+            val cameraUpdate: CameraUpdate = CameraUpdateFactory . newCameraPosition (cameraPosition);
+            googleMap.moveCamera(cameraUpdate);
+            googleMap.addMarker(MarkerOptions()
+                    .position(marker_latlng)
+                    .title(name)).showInfoWindow()
         }
     }
 }

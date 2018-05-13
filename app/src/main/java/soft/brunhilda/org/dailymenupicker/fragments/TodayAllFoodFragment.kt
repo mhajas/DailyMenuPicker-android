@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import kotlinx.android.synthetic.main.content_food_today.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
@@ -45,14 +46,22 @@ class TodayAllFoodFragment : Fragment() {
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
             today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
+
+            today_food_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                val fragment = ParticularRestaurantFragment()
+                fragment.arguments = Bundle()
+                fragment.arguments.putString("googleID",adapterItems[position].googlePlace.placeId)
+                fragment.arguments.putString("restaurantName",adapterItems[position].googlePlace.name)
+                activity.supportFragmentManager
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.content_main, fragment)
+                        .commit()
+            };
         }
-
-
     }
-
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.content_food_today, container, false)
     }
-
 }

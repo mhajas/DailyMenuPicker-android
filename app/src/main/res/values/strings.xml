@@ -4,9 +4,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="restaurants">Restaurants</string>
-    <string name="today_all_foods">All today foods</string>
+    <string name="action_settings">Nastavenia</string>
+    <string name="all_restaurants">Reštaurácie v okolí</string>
+    <string name="today_all_foods">Dnešne jedla v okolí</string>
     <string name="favorite_ingredients">Obľúbené ingrediencie</string>
     <string name="favorite_ingredients_header">Zvolte obľúbene ingrediencie</string>
     <string name="rice">Rýže</string>
@@ -19,4 +19,5 @@
     <string name="fish">Ryba</string>
     <string name="pasta">Těstoviny</string>
     <string name="sweet">Sladký</string>
+    <string name="favorite_restaurants_header">Obľúbené reštaurácie</string>
 </resources>

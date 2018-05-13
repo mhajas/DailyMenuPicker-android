@@ -7,15 +7,20 @@
         <item
             android:id="@+id/nav_restaurants"
             android:icon="@drawable/ic_menu_camera"
-            android:title="@string/restaurants" />
+            android:title="@string/all_restaurants" />
         <item
             android:id="@+id/nav_today_all_foods"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/today_all_foods" />
 
         <item
-            android:id="@+id/nav_favorite_ingredients"
-            android:icon="@drawable/ic_menu_send"
-            android:title="@string/favorite_ingredients_header" />
+        android:id="@+id/nav_favorite_ingredients"
+        android:icon="@drawable/ic_menu_send"
+        android:title="@string/favorite_ingredients_header" />
+
+        <item
+            android:id="@+id/nav_favorite_restaurants"
+            android:icon="@drawable/ic_menu_share"
+            android:title="@string/favorite_restaurants_header" />
     </group>
 </menu>

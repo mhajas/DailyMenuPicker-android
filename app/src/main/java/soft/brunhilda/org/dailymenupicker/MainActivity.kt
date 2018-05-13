@@ -7,10 +7,12 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import soft.brunhilda.org.dailymenupicker.fragments.FavoriteIngredientsFragment
+import soft.brunhilda.org.dailymenupicker.fragments.FavouriteRestaurantsFragment
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
 import soft.brunhilda.org.dailymenupicker.fragments.TodayAllRestaurantFragment
 
@@ -46,6 +48,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_favorite_ingredients -> {
                 supportFragmentManager.beginTransaction().replace(R.id.content_main, FavoriteIngredientsFragment()).commit()
             }
+            R.id.nav_favorite_restaurants -> {
+                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavouriteRestaurantsFragment()).commit()
+            }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
 
@@ -56,7 +61,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_settings -> return true
+            R.id.action_settings -> {
+                Toast.makeText(this, "Settings will be here",Toast.LENGTH_LONG).show()
+                return true
+        }
             else -> return super.onOptionsItemSelected(item)
         }
     }

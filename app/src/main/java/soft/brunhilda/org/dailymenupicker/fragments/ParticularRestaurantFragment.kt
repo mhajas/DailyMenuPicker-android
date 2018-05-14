@@ -152,7 +152,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(grantResults.map { it==PackageManager.PERMISSION_DENIED }.isNotEmpty()){
+        if(grantResults.filter { it==PackageManager.PERMISSION_DENIED }.isNotEmpty()){
             System.err.println("Permission was denied, permission: $permissions")
             fragmentManager.popBackStackImmediate() //sorry, get back
         }else{

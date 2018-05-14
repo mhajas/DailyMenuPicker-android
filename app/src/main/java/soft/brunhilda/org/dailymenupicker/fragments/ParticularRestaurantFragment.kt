@@ -26,13 +26,13 @@ import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.MapView
 
-
-
-class ParticularRestaurantFragment : Fragment() {
+class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     private var isFavourite = false;
     private var googleID: String = ""
     private var name: String = ""
+    private lateinit var mapView: MapView
 
     private val dataPreparer = NearestPlacesDataPreparer.getInstance()
     private val dataTransformer = FoodAdapterTransformer.getInstance()
@@ -72,7 +72,6 @@ class ParticularRestaurantFragment : Fragment() {
 
         //TODO change to find places only for this restaurants and add NAME to the toolbar
         dataPreparer.findPlaces(this::placesPreparationIsFinished)
-        showMap()
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
@@ -91,15 +90,20 @@ class ParticularRestaurantFragment : Fragment() {
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
 
-
-            recyclerView1.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            restaurant_food_recycle_view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
             var adapter = FoodEntityAdapter_recycler(adapterItems)
-            recyclerView1.adapter = adapter
+            restaurant_food_recycle_view.adapter = adapter
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.content_particular_restaurant, container, false)
+        val view = inflater?.inflate(R.layout.content_particular_restaurant, container, false)
+
+        mapView = view?.findViewById(R.id.mapwhere) as MapView
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
+
+        return view;
     }
 
     private fun isPlaceInFavourite(database: DailyMenuPickerDatabase): Boolean {
@@ -121,30 +125,36 @@ class ParticularRestaurantFragment : Fragment() {
         }
     }
 
-    private fun showMap(){
-        System.out.println("Showing map")
-        val mSupportMapFragment = MapFragment.newInstance();
-        activity.fragmentManager.beginTransaction().replace(R.id.mapwhere, mSupportMapFragment).commit();
-
-        if (mSupportMapFragment != null) {
-            mSupportMapFragment.getMapAsync(this::mapReady);
-        }
+    override fun onMapReady(googleMap: GoogleMap) {
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
+        val marker_latlng: LatLng = LatLng(49.2227476, 16.584627) //TODO
+        val cameraPosition: CameraPosition = CameraPosition.Builder()
+                .target(marker_latlng)
+                .zoom(15.0f).build()
+        val cameraUpdate: CameraUpdate = CameraUpdateFactory . newCameraPosition (cameraPosition);
+        googleMap.moveCamera(cameraUpdate);
+        googleMap.addMarker(MarkerOptions()
+                .position(marker_latlng)
+                .title(name)).showInfoWindow()
     }
 
-    private fun mapReady(googleMap: GoogleMap){
-        System.out.println("Showing in map ready function")
+    override fun onResume() {
+        super.onResume();
+        mapView.onResume()
+    }
 
-        if (googleMap != null) {
-            googleMap.getUiSettings().setAllGesturesEnabled(true);
-            val marker_latlng: LatLng = LatLng(49.2227476, 16.584627) //TODO
-            val cameraPosition: CameraPosition = CameraPosition.Builder()
-                    .target(marker_latlng)
-                    .zoom(15.0f).build()
-            val cameraUpdate: CameraUpdate = CameraUpdateFactory . newCameraPosition (cameraPosition);
-            googleMap.moveCamera(cameraUpdate);
-            googleMap.addMarker(MarkerOptions()
-                    .position(marker_latlng)
-                    .title(name)).showInfoWindow()
-        }
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 }

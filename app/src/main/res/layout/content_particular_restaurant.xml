@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="@dimen/map_size"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -23,11 +23,9 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
-            <fragment
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_weight="2"
-                android:name="com.google.android.gms.maps.MapFragment"
+            <com.google.android.gms.maps.MapView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:id="@+id/mapwhere" />
 
         </android.support.design.widget.CollapsingToolbarLayout>

@@ -1,5 +1,6 @@
 package soft.brunhilda.org.dailymenupicker
 
+import android.app.FragmentManager
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun displaySelectedScreen(id: Int){
+        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         when (id) {
             R.id.nav_restaurants -> {
                 supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllRestaurantFragment.getInstance()).commit()

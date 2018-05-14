@@ -27,14 +27,13 @@ import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.MapView
-import noman.googleplaces.Place
 
 class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     private var isFavourite = false
-    private val place: Place = Place()
+    private lateinit var place: ComparablePlace
     private lateinit var mapView: MapView
 
-    private val dataPreparer = NearestPlacesDataPreparer.getInstance()
+    private val dataResolver = CachedRestDataResolver()
     private val dataTransformer = FoodAdapterTransformer.getInstance()
     private val dataEvaluator = FoodEvaluator.getInstance()
 
@@ -44,8 +43,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
                 .allowMainThreadQueries()
                 .build()
 
-        place.name = this.arguments.getString("googleID",null); //TODO .. check null value in the next lines 
-        place.placeId = this.arguments.getString("restaurantName",null);
+        place = this.arguments.getSerializable("googlePlace") as ComparablePlace
 
         val myFab = view?.findViewById(R.id.fab) as FloatingActionButton
         if(isPlaceInFavourite(database)){
@@ -72,11 +70,10 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
             Toast.LENGTH_LONG).show()
 
         //TODO add NAME to the toolbar
-        placesPreparationIsFinished(mutableSetOf(ComparablePlace(place)))
+        placesPreparationIsFinished(mutableSetOf(place))
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
-        val dataResolver = CachedRestDataResolver()
         dataResolver.resolvePlaces(places.toList(), this::placesResolvingIsFinished)
     }
 
@@ -127,7 +124,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         googleMap.getUiSettings().setAllGesturesEnabled(true);
-        val marker_latlng: LatLng = LatLng(49.2227476, 16.584627) //TODO
+        val marker_latlng: LatLng = LatLng(place.latitude, place.longitude)
         val cameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(marker_latlng)
                 .zoom(15.0f).build()

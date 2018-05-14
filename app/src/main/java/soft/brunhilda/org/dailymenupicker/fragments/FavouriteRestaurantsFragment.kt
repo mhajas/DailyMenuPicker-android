@@ -68,8 +68,7 @@ class FavouriteRestaurantsFragment : Fragment() {
             today_restaurant_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
                 val fragment = ParticularRestaurantFragment()
                 fragment.arguments = Bundle()
-                fragment.arguments.putString("googleID",adapterItems[position].googlePlace.placeId)
-                fragment.arguments.putString("restaurantName",adapterItems[position].googlePlace.name)
+                fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
                 activity.supportFragmentManager
                         .beginTransaction()
                         .addToBackStack(null)

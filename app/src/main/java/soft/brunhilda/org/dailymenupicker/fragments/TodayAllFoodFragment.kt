@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.android.synthetic.main.content_food_today.*
+import noman.googleplaces.Place
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
@@ -65,8 +66,7 @@ class TodayAllFoodFragment : Fragment() {
             today_food_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
                 val fragment = ParticularRestaurantFragment()
                 fragment.arguments = Bundle()
-                fragment.arguments.putString("googleID",adapterItems[position].googlePlace.placeId)
-                fragment.arguments.putString("restaurantName",adapterItems[position].googlePlace.name)
+                fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
                 activity.supportFragmentManager
                         .beginTransaction()
                         .addToBackStack(null)

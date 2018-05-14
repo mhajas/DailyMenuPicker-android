@@ -1,9 +1,9 @@
 package soft.brunhilda.org.dailymenupicker
 
 import noman.googleplaces.Place
+import java.io.Serializable
 
-class ComparablePlace(place: Place) : Place() {
-
+class ComparablePlace(place: Place) : Place(), Serializable{
 
     override fun equals(other: Any?) : Boolean{
         if (this === other) return true

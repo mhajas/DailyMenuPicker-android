@@ -1,6 +1,7 @@
 package soft.brunhilda.org.dailymenupicker.fragments
 
 import android.arch.persistence.room.Room
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,8 +13,6 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.content_scrolling.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter_recycler
@@ -21,11 +20,8 @@ import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
 import soft.brunhilda.org.dailymenupicker.database.FavoriteRestaurantEntity
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
-import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.MapView
 
 class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
@@ -39,7 +35,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
+        val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
                 .allowMainThreadQueries()
                 .build()
 
@@ -47,9 +43,9 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
 
         val myFab = view?.findViewById(R.id.fab) as FloatingActionButton
         if(isPlaceInFavourite(database)){
-            myFab.setImageResource(android.R.drawable.ic_delete);
+            myFab.setImageResource(android.R.drawable.ic_delete)
         }else{
-            myFab.setImageResource(android.R.drawable.ic_menu_save);
+            myFab.setImageResource(android.R.drawable.ic_menu_save)
         }
         myFab.setOnClickListener {
             if (isPlaceInFavourite(database)) {
@@ -57,19 +53,19 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(activity, "Place was removed from the favourite places",
                         Toast.LENGTH_LONG).show()
                 isFavourite = false
-                myFab.setImageResource(android.R.drawable.ic_menu_save);
+                myFab.setImageResource(android.R.drawable.ic_menu_save)
             } else {
                 addToDB(database)
                 Toast.makeText(activity, "Place was added to the favourite places",
                         Toast.LENGTH_LONG).show()
                 isFavourite = true
-                myFab.setImageResource(android.R.drawable.ic_delete);
+                myFab.setImageResource(android.R.drawable.ic_delete)
             }
         }
         Toast.makeText(activity, "Place name: ${place.name} placeID: ${place.placeId}",
             Toast.LENGTH_LONG).show()
 
-        //TODO add NAME to the toolbar
+        //TODO add NAME
         placesPreparationIsFinished(mutableSetOf(place))
     }
 
@@ -88,7 +84,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
 
             restaurant_food_recycle_view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            var adapter = FoodEntityAdapter_recycler(adapterItems)
+            val adapter = FoodEntityAdapter_recycler(adapterItems)
             restaurant_food_recycle_view.adapter = adapter
         }
     }
@@ -100,7 +96,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-        return view;
+        return view
     }
 
     private fun isPlaceInFavourite(database: DailyMenuPickerDatabase): Boolean {
@@ -109,34 +105,33 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addToDB(database: DailyMenuPickerDatabase) {
-        val restaurantEntity: FavoriteRestaurantEntity = FavoriteRestaurantEntity()
+        val restaurantEntity = FavoriteRestaurantEntity()
         restaurantEntity.name = place.name
         restaurantEntity.placeId = place.placeId
         database.favoriteRestaurantDao().insert(restaurantEntity)
     }
 
     private fun removeFromDB(database: DailyMenuPickerDatabase) {
-        val favourite = database.favoriteRestaurantDao().getByPlaceId(place.placeId);
+        val favourite = database.favoriteRestaurantDao().getByPlaceId(place.placeId)
         if (favourite != null) {
             database.favoriteRestaurantDao().delete(favourite)
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        googleMap.getUiSettings().setAllGesturesEnabled(true);
-        val marker_latlng: LatLng = LatLng(place.latitude, place.longitude)
-        val cameraPosition: CameraPosition = CameraPosition.Builder()
-                .target(marker_latlng)
-                .zoom(15.0f).build()
-        val cameraUpdate: CameraUpdate = CameraUpdateFactory . newCameraPosition (cameraPosition);
-        googleMap.moveCamera(cameraUpdate);
-        googleMap.addMarker(MarkerOptions()
-                .position(marker_latlng)
-                .title(place.name)).showInfoWindow()
+        val mapManager = MapManager(activity, context, googleMap,place)
+        if (mapManager.checkPermission())
+            mapManager.createMap()
+        else
+            requestPermissions(
+                    arrayOf(
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                            android.Manifest.permission.ACCESS_FINE_LOCATION
+                    ),1)
     }
 
     override fun onResume() {
-        super.onResume();
+        super.onResume()
         mapView.onResume()
     }
 
@@ -153,5 +148,16 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.map { it==PackageManager.PERMISSION_DENIED }.isNotEmpty()){
+            System.err.println("Permission was denied, permission: $permissions")
+            fragmentManager.popBackStackImmediate() //sorry, get back
+        }else{
+            val mapView = activity.findViewById(R.id.mapwhere) as MapView
+            mapView.getMapAsync(this)
+        }
     }
 }

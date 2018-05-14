@@ -27,11 +27,11 @@ import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.MapView
+import noman.googleplaces.Place
 
 class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
-    private var isFavourite = false;
-    private var googleID: String = ""
-    private var name: String = ""
+    private var isFavourite = false
+    private val place: Place = Place()
     private lateinit var mapView: MapView
 
     private val dataPreparer = NearestPlacesDataPreparer.getInstance()
@@ -43,8 +43,9 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
         var database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
                 .allowMainThreadQueries()
                 .build()
-        googleID = this.arguments.getString("googleID",null);
-        name = this.arguments.getString("restaurantName",null);
+
+        place.name = this.arguments.getString("googleID",null); //TODO .. check null value in the next lines 
+        place.placeId = this.arguments.getString("restaurantName",null);
 
         val myFab = view?.findViewById(R.id.fab) as FloatingActionButton
         if(isPlaceInFavourite(database)){
@@ -67,11 +68,11 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
                 myFab.setImageResource(android.R.drawable.ic_delete);
             }
         }
-        Toast.makeText(activity, "Place name: $name placeID: $googleID",
+        Toast.makeText(activity, "Place name: ${place.name} placeID: ${place.placeId}",
             Toast.LENGTH_LONG).show()
 
-        //TODO change to find places only for this restaurants and add NAME to the toolbar
-        dataPreparer.findPlaces(this::placesPreparationIsFinished)
+        //TODO add NAME to the toolbar
+        placesPreparationIsFinished(mutableSetOf(ComparablePlace(place)))
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
@@ -80,7 +81,6 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
-
         if (context != null) {
             var adapterItems = dataTransformer.transform(places)
             val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
@@ -107,19 +107,19 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun isPlaceInFavourite(database: DailyMenuPickerDatabase): Boolean {
-        val favourite = database.favoriteRestaurantDao().getByPlaceId(googleID)
+        val favourite = database.favoriteRestaurantDao().getByPlaceId(place.placeId)
         return favourite != null
     }
 
     private fun addToDB(database: DailyMenuPickerDatabase) {
         val restaurantEntity: FavoriteRestaurantEntity = FavoriteRestaurantEntity()
-        restaurantEntity.name = name
-        restaurantEntity.placeId = googleID
+        restaurantEntity.name = place.name
+        restaurantEntity.placeId = place.placeId
         database.favoriteRestaurantDao().insert(restaurantEntity)
     }
 
     private fun removeFromDB(database: DailyMenuPickerDatabase) {
-        val favourite = database.favoriteRestaurantDao().getByPlaceId(googleID);
+        val favourite = database.favoriteRestaurantDao().getByPlaceId(place.placeId);
         if (favourite != null) {
             database.favoriteRestaurantDao().delete(favourite)
         }
@@ -135,7 +135,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
         googleMap.moveCamera(cameraUpdate);
         googleMap.addMarker(MarkerOptions()
                 .position(marker_latlng)
-                .title(name)).showInfoWindow()
+                .title(place.name)).showInfoWindow()
     }
 
     override fun onResume() {

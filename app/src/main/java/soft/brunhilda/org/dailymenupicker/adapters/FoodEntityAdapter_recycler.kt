@@ -1,10 +1,13 @@
 package soft.brunhilda.org.dailymenupicker.adapters
 
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 import java.text.NumberFormat
@@ -34,11 +37,20 @@ class FoodEntityAdapter_recycler(
         holder?.restaurant_name?.text =  food.googlePlace.name
 
         holder?.evaluation?.text = String.format("%.2f", food.preferenceEvaluation)
+
+        holder?.button?.setOnClickListener { view ->
+            /*Snackbar
+                    .make(view, "Food was added to agenda", Snackbar.LENGTH_SHORT)
+                    .show()*///TODO add to agenda etc
+        }
+        holder?.itemView?.setOnClickListener {
+            holder?.button?.performClick()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_dayfood, parent, false)
-        return ViewHolder(v);
+        return ViewHolder(v)
     }
 
     override fun getItemCount(): Int {
@@ -52,5 +64,6 @@ class FoodEntityAdapter_recycler(
         val soup_price = itemView.findViewById<TextView>(R.id.dayfood_soup_price)
         val restaurant_name = itemView.findViewById<TextView>(R.id.restaurant_name)
         val evaluation = itemView.findViewById<TextView>(R.id.dayfood_evaluation)
+        val button = itemView.findViewById<CheckBox>(R.id.agenda_button)
     }
 }

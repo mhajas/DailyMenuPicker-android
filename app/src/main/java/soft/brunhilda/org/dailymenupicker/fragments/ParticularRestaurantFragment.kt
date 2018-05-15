@@ -40,9 +40,9 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
 
     private fun setUpFavouriteButton(databaseManager: DatabaseManager, myFab: FloatingActionButton, view: View) {
         if (databaseManager.isPlaceInDb(place.placeId)) {
-            myFab.setImageResource(android.R.drawable.ic_delete)
+            myFab.setImageResource(R.drawable.ic_dislike)
         } else {
-            myFab.setImageResource(android.R.drawable.ic_menu_save)
+            myFab.setImageResource(R.drawable.ic_like)
         }
         myFab.setOnClickListener {
             if (databaseManager.isPlaceInDb(place.placeId)) {
@@ -56,7 +56,7 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
                             myFab.callOnClick()
                         })
                         .show()
-                myFab.setImageResource(android.R.drawable.ic_menu_save)
+                myFab.setImageResource(R.drawable.ic_like)
             } else {
                 databaseManager.addFavouritePlace(place)
                 Snackbar
@@ -68,7 +68,7 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
                             myFab.callOnClick()
                         })
                         .show()
-                myFab.setImageResource(android.R.drawable.ic_delete)
+                myFab.setImageResource(R.drawable.ic_dislike)
             }
         }
     }

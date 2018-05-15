@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 
 
 class RetrofitApi {
-    private val url = "http://demo6784082.mockable.io/"
+    private val url = "http://rest-endpoint-rest-endpoint.193b.starter-ca-central-1.openshiftapps.com/restendpoint/"
 
     val okHttpClient = OkHttpClient.Builder()
             .readTimeout(5, TimeUnit.SECONDS)
@@ -20,7 +20,7 @@ class RetrofitApi {
             .client(okHttpClient)
             .build()
 
-    fun get(): MockAPIService {
-        return retrofit.create(MockAPIService::class.java)
+    fun get(): APIService {
+        return retrofit.create(APIService::class.java)
     }
 }

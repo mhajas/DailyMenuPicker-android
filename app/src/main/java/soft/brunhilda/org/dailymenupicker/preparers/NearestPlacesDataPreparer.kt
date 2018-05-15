@@ -58,7 +58,7 @@ class NearestPlacesDataPreparer private constructor(
                 .listener(this)
                 .key("AIzaSyAMJQuIQAzLRHdCGbxhfsvr-q7lFEaPxPg")
                 .latlng(newPosition.latitude, newPosition.longitude)
-                .radius(600)
+                .radius(1000)
                 .type(PlaceType.RESTAURANT)
                 .build()
                 .execute()

@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.android.synthetic.main.content_all_restaurants.*
+import kotlinx.android.synthetic.main.no_resource_layout.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.RestaurantEntityAdapter
@@ -61,17 +62,25 @@ class TodayAllRestaurantFragment : Fragment(){
             adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
-            today_restaurant_list_view.adapter = RestaurantEntityAdapter(context, adapterItems)
-            today_restaurant_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                val fragment = ParticularRestaurantFragment()
-                fragment.arguments = Bundle()
-                fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
-                activity.supportFragmentManager
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.content_main, fragment)
-                        .commit()
-            };
+
+            if (adapterItems.isEmpty()) {
+                today_restaurant_list_view.visibility = View.GONE
+                no_resource_message.visibility = View.VISIBLE
+                no_resource_message_text.text = context.resources.getString(R.string.no_resource_message_near_restaurant)
+            } else {
+
+                today_restaurant_list_view.adapter = RestaurantEntityAdapter(context, adapterItems)
+                today_restaurant_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                    val fragment = ParticularRestaurantFragment()
+                    fragment.arguments = Bundle()
+                    fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
+                    activity.supportFragmentManager
+                            .beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.content_main, fragment)
+                            .commit()
+                }
+            }
 
             if (!animated) {
                 val animatedView: SpinKitView? = view?.findViewById(R.id.restaurants_loading_animation)

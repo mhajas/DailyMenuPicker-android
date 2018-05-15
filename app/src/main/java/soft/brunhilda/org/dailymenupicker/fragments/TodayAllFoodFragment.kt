@@ -13,7 +13,7 @@ import android.widget.AdapterView
 import android.widget.LinearLayout
 import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.android.synthetic.main.content_food_today.*
-import noman.googleplaces.Place
+import kotlinx.android.synthetic.main.no_resource_layout.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
@@ -72,6 +72,25 @@ class TodayAllFoodFragment : Fragment() {
                         .addToBackStack(null)
                         .replace(R.id.content_main, fragment)
                         .commit()
+            }
+
+            if (adapterItems.isEmpty()) {
+                today_food_list_view.visibility = View.GONE
+                no_resource_message.visibility = View.VISIBLE
+                no_resource_message_text.text = context.resources.getString(R.string.no_resource_message_near_food)
+            } else {
+                today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
+
+                today_food_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                    val fragment = ParticularRestaurantFragment()
+                    fragment.arguments = Bundle()
+                    fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
+                    activity.supportFragmentManager
+                            .beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.content_main, fragment)
+                            .commit()
+                }
             }
 
             if (!animated) {

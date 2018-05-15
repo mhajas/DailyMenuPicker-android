@@ -24,4 +24,6 @@
         android:alpha="0"
         />
 
+    <include layout="@layout/no_resource_layout" />
+
 </LinearLayout>

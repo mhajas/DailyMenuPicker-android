@@ -85,7 +85,11 @@ class NearestPlacesDataPreparer private constructor(
     }
 
     override fun onPlacesFailure(e: PlacesException?) {
+        state = DataPreparationState.FINISHED
 
+        Hawk.put("lastPositionResult", preparedPlaces)
+
+        callback(preparedPlaces)
     }
 
     override fun onPlacesSuccess(places: MutableList<Place>?) {

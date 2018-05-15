@@ -19,4 +19,7 @@
     <string name="pasta">Těstoviny</string>
     <string name="sweet">Sladký</string>
     <string name="favorite_restaurants_header">Obľúbené reštaurácie</string>
+    <string name="no_resource_message_favorite_restaurants">Nemáte žádné oblíbené restaurace</string>
+    <string name="no_resource_message_near_food">Nenašli sa žiadne jedlá v okolí</string>
+    <string name="no_resource_message_near_restaurant">Nenašli sa žiadne restaurácie v okolí</string>
 </resources>

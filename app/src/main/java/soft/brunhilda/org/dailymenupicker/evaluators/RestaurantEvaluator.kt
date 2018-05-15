@@ -29,22 +29,23 @@ class RestaurantEvaluator : Evaluator<RestaurantEntityAdapterItem> {
                 restaurantEntityAdapterItem.preferenceEvaluation += 1
             }
 
-            val foodEvaluations = mutableListOf<Double>()
+            val todayData = restaurantEntityAdapterItem.restaurantWeekData.findTodayMenu()
 
             // evaluate all food served today and get average of it as final score
-            restaurantEntityAdapterItem.restaurantDailyData.menu.forEach{
-                val containedIngrediets = it.tags?.intersect(favoriteIngredients.map { it.ingredient })
+            if(todayData!=null){
+                val foodEvaluations = mutableListOf<Double>()
+                todayData.menu.forEach {
+                    val containedIngrediets = it.tags?.intersect(favoriteIngredients.map { it.ingredient })
 
-                if (containedIngrediets != null && it.tags.isNotEmpty()) {
-                    // score 0 - 5 based on how many of ingredients contained in food is favorite for user
-                    foodEvaluations.add(5.0 * (containedIngrediets.size.toDouble() / it.tags.size)) // can't be null because if it is null, the intersection will be null
+                    if (containedIngrediets != null && it.tags.isNotEmpty()) {
+                        // score 0 - 5 based on how many of ingredients contained in food is favorite for user
+                        foodEvaluations.add(5.0 * (containedIngrediets.size.toDouble() / it.tags.size)) // can't be null because if it is null, the intersection will be null
+                    }
                 }
+                restaurantEntityAdapterItem.preferenceEvaluation += foodEvaluations.average()
             }
-
-            restaurantEntityAdapterItem.preferenceEvaluation += foodEvaluations.average()
 
             return@map restaurantEntityAdapterItem
         }.toMutableList()
     }
-
 }

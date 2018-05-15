@@ -6,5 +6,5 @@ data class RestaurantEntityAdapterItem (
         val googlePlace: Place,
         val averagePrice: Double,
         val soupPrice: Int?,
-        val restaurantDailyData: RestaurantDailyData
-) : EvaluatableEntity() {}
+        val restaurantWeekData: RestaurantWeekData
+) : EvaluatableEntity()

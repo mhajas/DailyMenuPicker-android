@@ -3,7 +3,6 @@ package soft.brunhilda.org.dailymenupicker.fragments
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
-import android.arch.persistence.room.Room
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.no_resource_layout.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
-import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
+import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
@@ -55,10 +54,8 @@ class TodayAllFoodFragment : Fragment() {
 
         if (context != null) {
             var adapterItems = dataTransformer.transform(places)
-            val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                    .allowMainThreadQueries()
-                    .build()
-            adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
+            val database = DatabaseManager(context)
+            adapterItems = dataEvaluator.evaluate(adapterItems, database.getAllFavouritePlaces(), database.getAllFavouriteIngredients())
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
             today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)

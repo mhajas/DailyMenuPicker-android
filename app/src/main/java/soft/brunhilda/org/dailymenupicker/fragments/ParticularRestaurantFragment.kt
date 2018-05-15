@@ -1,6 +1,5 @@
 package soft.brunhilda.org.dailymenupicker.fragments
 
-import android.arch.persistence.room.Room
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -16,13 +15,12 @@ import com.google.android.gms.maps.*
 import kotlinx.android.synthetic.main.content_scrolling.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter_recycler
-import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
-import soft.brunhilda.org.dailymenupicker.database.FavoriteRestaurantEntity
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.MapView
+import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 
 class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     private var isFavourite = false
@@ -35,27 +33,24 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                .allowMainThreadQueries()
-                .build()
-
+        val databaseManager = DatabaseManager(context)
         place = this.arguments.getSerializable("googlePlace") as ComparablePlace
 
         val myFab = view?.findViewById(R.id.fab) as FloatingActionButton
-        if(isPlaceInFavourite(database)){
+        if(databaseManager.isPlaceInDb(place.placeId)){
             myFab.setImageResource(android.R.drawable.ic_delete)
         }else{
             myFab.setImageResource(android.R.drawable.ic_menu_save)
         }
         myFab.setOnClickListener {
-            if (isPlaceInFavourite(database)) {
-                removeFromDB(database)
+            if (databaseManager.isPlaceInDb(place.placeId)) {
+                databaseManager.deleteFavouritePlace(place)
                 Toast.makeText(activity, "Place was removed from the favourite places",
                         Toast.LENGTH_LONG).show()
                 isFavourite = false
                 myFab.setImageResource(android.R.drawable.ic_menu_save)
             } else {
-                addToDB(database)
+                databaseManager.addFavouritePlace(place)
                 Toast.makeText(activity, "Place was added to the favourite places",
                         Toast.LENGTH_LONG).show()
                 isFavourite = true
@@ -76,10 +71,8 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
         if (context != null) {
             var adapterItems = dataTransformer.transform(places)
-            val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                    .allowMainThreadQueries()
-                    .build()
-            adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
+            val database = DatabaseManager(context)
+            adapterItems = dataEvaluator.evaluate(adapterItems, database.getAllFavouritePlaces(), database.getAllFavouriteIngredients())
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
 
@@ -99,27 +92,8 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-    private fun isPlaceInFavourite(database: DailyMenuPickerDatabase): Boolean {
-        val favourite = database.favoriteRestaurantDao().getByPlaceId(place.placeId)
-        return favourite != null
-    }
-
-    private fun addToDB(database: DailyMenuPickerDatabase) {
-        val restaurantEntity = FavoriteRestaurantEntity()
-        restaurantEntity.name = place.name
-        restaurantEntity.placeId = place.placeId
-        database.favoriteRestaurantDao().insert(restaurantEntity)
-    }
-
-    private fun removeFromDB(database: DailyMenuPickerDatabase) {
-        val favourite = database.favoriteRestaurantDao().getByPlaceId(place.placeId)
-        if (favourite != null) {
-            database.favoriteRestaurantDao().delete(favourite)
-        }
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
-        val mapManager = MapManager(activity, context, googleMap,place)
+        val mapManager = MapViewManager(activity, context, googleMap,place)
         if (mapManager.checkPermission())
             mapManager.createMap()
         else

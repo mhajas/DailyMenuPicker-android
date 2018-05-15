@@ -18,6 +18,7 @@ import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.RestaurantEntityAdapter
 import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
+import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.RestaurantEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.FavouriteDataPreparer
@@ -41,9 +42,7 @@ class FavouriteRestaurantsFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                .allowMainThreadQueries()
-                .build()
+        val database = DatabaseManager(context)
 
         val dataPreparer = FavouriteDataPreparer(database = database)
         System.out.println("before find places")
@@ -59,10 +58,8 @@ class FavouriteRestaurantsFragment : Fragment() {
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
         if (context != null) {
             var adapterItems = dataTransformer.transform(places)
-            val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                    .allowMainThreadQueries()
-                    .build()
-            adapterItems = dataEvaluator.evaluate(adapterItems, database.favoriteRestaurantDao().findAll(), database.favoriteIngredientDao().findAll())
+            val database = DatabaseManager(context)
+            adapterItems = dataEvaluator.evaluate(adapterItems, database.getAllFavouritePlaces(), database.getAllFavouriteIngredients())
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
 

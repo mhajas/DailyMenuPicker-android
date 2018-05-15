@@ -11,7 +11,13 @@ data class FavoriteRestaurantEntity (
         var placeId: String = "",
 
         @ColumnInfo(name = "name")
-        var name: String = "") {
+        var name: String = "",
+
+        @ColumnInfo(name = "latitude")
+        var latitude: Double = 0.0,
+
+        @ColumnInfo(name = "longitude")
+        var longitude: Double = 0.0) {
 
     override fun toString(): String {
         return "FavoriteRestaurantEntity(placeId='$placeId', name='$name')"

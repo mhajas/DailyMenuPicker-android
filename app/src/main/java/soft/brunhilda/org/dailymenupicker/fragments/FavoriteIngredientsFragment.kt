@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.content_favorite_ingredients.*
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.IngredientEntityAdapter
 import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
+import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.database.Ingredient
 
 class FavoriteIngredientsFragment : Fragment() {
@@ -29,9 +30,7 @@ class FavoriteIngredientsFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val database = Room.databaseBuilder(context, DailyMenuPickerDatabase::class.java, "db")
-                .allowMainThreadQueries()
-                .build()
+        val database = DatabaseManager(context)
 
         favorite_ingredients_list_view.adapter = IngredientEntityAdapter(context, Ingredient.values().toList(), database)
 

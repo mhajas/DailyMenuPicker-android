@@ -9,15 +9,15 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import soft.brunhilda.org.dailymenupicker.R
-import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
+import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.database.FavoriteIngredientEntity
 import soft.brunhilda.org.dailymenupicker.database.Ingredient
 
 class IngredientEntityAdapter(
         private val context: Context,
         private val ingredients: List<Ingredient>,
-        private val database: DailyMenuPickerDatabase,
-        private val favoriteIngredients: List<FavoriteIngredientEntity> = database.favoriteIngredientDao().findAll()
+        private val database: DatabaseManager,
+        private val favoriteIngredients: List<FavoriteIngredientEntity> = database.getAllFavouriteIngredients()
 
 ) : BaseAdapter() {
 
@@ -43,9 +43,9 @@ class IngredientEntityAdapter(
         view?.findViewById<CheckBox>(R.id.ingredient_checkbox)?.setOnCheckedChangeListener({ button, b ->
             run {
                 if (b) {
-                    database.favoriteIngredientDao().insert(FavoriteIngredientEntity(ingredient))
+                    database.addFavouriteIngredient(FavoriteIngredientEntity(ingredient))
                 } else {
-                    database.favoriteIngredientDao().delete(FavoriteIngredientEntity(ingredient))
+                    database.deleteFavouriteIngredient(FavoriteIngredientEntity(ingredient))
                 }
 
                 button.isChecked = b

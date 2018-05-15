@@ -3,9 +3,7 @@ package soft.brunhilda.org.dailymenupicker.fragments
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
-import android.arch.persistence.room.Room
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +15,6 @@ import kotlinx.android.synthetic.main.no_resource_layout.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.RestaurantEntityAdapter
-import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.RestaurantEvaluator
@@ -25,7 +22,7 @@ import soft.brunhilda.org.dailymenupicker.preparers.FavouriteDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.RestaurantAdapterTransformer
 
-class FavouriteRestaurantsFragment : Fragment() {
+class FavouriteRestaurantsFragment : ParentFragment() {
 
     companion object {
         private var mInstance: FavouriteRestaurantsFragment = FavouriteRestaurantsFragment()
@@ -74,7 +71,7 @@ class FavouriteRestaurantsFragment : Fragment() {
                     val fragment = ParticularRestaurantFragment()
                     fragment.arguments = Bundle()
                     fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
-                    activity.supportFragmentManager
+                    activity.fragmentManager
                             .beginTransaction()
                             .addToBackStack(null)
                             .replace(R.id.content_main, fragment)

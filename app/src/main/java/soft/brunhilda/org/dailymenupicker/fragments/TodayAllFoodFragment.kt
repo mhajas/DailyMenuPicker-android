@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,7 @@ import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 
-class TodayAllFoodFragment : Fragment() {
+class TodayAllFoodFragment : ParentFragment() {
 
     companion object {
         private var mInstance: TodayAllFoodFragment = TodayAllFoodFragment()
@@ -64,7 +63,7 @@ class TodayAllFoodFragment : Fragment() {
                 val fragment = ParticularRestaurantFragment()
                 fragment.arguments = Bundle()
                 fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
-                activity.supportFragmentManager
+                fragmentManager
                         .beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.content_main, fragment)
@@ -82,7 +81,7 @@ class TodayAllFoodFragment : Fragment() {
                     val fragment = ParticularRestaurantFragment()
                     fragment.arguments = Bundle()
                     fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
-                    activity.supportFragmentManager
+                    activity.fragmentManager
                             .beginTransaction()
                             .addToBackStack(null)
                             .replace(R.id.content_main, fragment)

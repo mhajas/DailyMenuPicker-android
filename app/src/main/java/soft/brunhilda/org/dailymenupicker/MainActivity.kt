@@ -39,19 +39,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun displaySelectedScreen(id: Int){
-        supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         when (id) {
             R.id.nav_restaurants -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllRestaurantFragment.getInstance()).commit()
+                fragmentManager.beginTransaction().replace(R.id.content_main, TodayAllRestaurantFragment.getInstance()).commit()
             }
             R.id.nav_today_all_foods -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment.getInstance()).commit()
+                fragmentManager.beginTransaction().replace(R.id.content_main, TodayAllFoodFragment.getInstance()).commit()
             }
             R.id.nav_favorite_ingredients -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavoriteIngredientsFragment.getInstance()).commit()
+                fragmentManager.beginTransaction().replace(R.id.content_main, FavoriteIngredientsFragment.getInstance()).commit()
             }
             R.id.nav_favorite_restaurants -> {
-                supportFragmentManager.beginTransaction().replace(R.id.content_main, FavouriteRestaurantsFragment.getInstance()).commit()
+                fragmentManager.beginTransaction().replace(R.id.content_main, FavouriteRestaurantsFragment.getInstance()).commit()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

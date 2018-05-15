@@ -2,7 +2,6 @@ package soft.brunhilda.org.dailymenupicker.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.MapView
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 
-class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
+class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     private var isFavourite = false
     private lateinit var place: ComparablePlace
     private lateinit var mapView: MapView
@@ -60,7 +59,6 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
         Toast.makeText(activity, "Place name: ${place.name} placeID: ${place.placeId}",
             Toast.LENGTH_LONG).show()
 
-        //TODO add NAME
         placesPreparationIsFinished(mutableSetOf(place))
     }
 
@@ -106,6 +104,7 @@ class ParticularRestaurantFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
+        activity.title = place.name
         mapView.onResume()
     }
 

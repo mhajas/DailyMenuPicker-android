@@ -1,8 +1,6 @@
 package soft.brunhilda.org.dailymenupicker.fragments
 
-import android.arch.persistence.room.Room
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +9,10 @@ import android.widget.CheckBox
 import kotlinx.android.synthetic.main.content_favorite_ingredients.*
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.IngredientEntityAdapter
-import soft.brunhilda.org.dailymenupicker.database.DailyMenuPickerDatabase
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.database.Ingredient
 
-class FavoriteIngredientsFragment : Fragment() {
+class FavoriteIngredientsFragment : ParentFragment() {
 
     companion object {
         private var mInstance: FavoriteIngredientsFragment = FavoriteIngredientsFragment()

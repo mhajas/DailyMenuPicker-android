@@ -16,14 +16,25 @@ class CachedRestDataResolver(
     : DataResolver {
 
     var callbackCalled: Int = 0
-    val LOCK: Object = Object()
+    val LOCK: Any = Object()
 
     private val foodService = RetrofitApi().get()
 
-    private fun resolvePlace(googlePlace: ComparablePlace) {
-        var restaurantWeekData: RestaurantWeekData? = Hawk.get(googlePlace.placeId, null)
+    private fun loadFromCache(googlePlace: ComparablePlace): RestaurantWeekData? {
+        val restaurantWeekData: RestaurantWeekData? = Hawk.get(googlePlace.placeId, null)
 
-        if (!Hawk.contains(googlePlace.placeId) && !isInCacheAsUnknown(googlePlace)) {
+        if (restaurantWeekData == null || !restaurantWeekData.isCurrent()) {
+            Hawk.delete(googlePlace.placeId)
+            return null
+        }
+
+        return restaurantWeekData
+    }
+
+    private fun resolvePlace(googlePlace: ComparablePlace) {
+        var restaurantWeekData: RestaurantWeekData? = loadFromCache(googlePlace)
+
+        if (restaurantWeekData == null) {
             synchronized(LOCK) {
                 callbackCalled++
                 println("Calling call number: $callbackCalled")
@@ -40,10 +51,6 @@ class CachedRestDataResolver(
                     }
 
                     synchronized(LOCK) {
-                        if (restaurantWeekData == null) {
-                            saveNotKnownRestaurant(googlePlace)
-                        }
-
                         storage.resolvedPlaces[googlePlace] = restaurantWeekData
                         --callbackCalled
                         println("Finishing call number: $callbackCalled")
@@ -58,7 +65,7 @@ class CachedRestDataResolver(
                         --callbackCalled
                         println("Finishing failed call number: $callbackCalled")
 
-                        saveNotKnownRestaurant(googlePlace)
+                        storage.resolvedPlaces[googlePlace] = null
 
                         if (callbackCalled <= 0) {
                             callback(storage.resolvedPlaces)
@@ -70,20 +77,9 @@ class CachedRestDataResolver(
             println("Data from Hawk: $restaurantWeekData")
             storage.resolvedPlaces[googlePlace] = restaurantWeekData
         }
+
     }
 
-    private fun saveNotKnownRestaurant(place: ComparablePlace) {
-        val set = Hawk.get<MutableSet<String>>("notKnownRestaurants", mutableSetOf())
-
-        set.add(place.placeId)
-
-        Hawk.put("notKnownRestaurants", set)
-    }
-
-    private fun isInCacheAsUnknown(place: ComparablePlace): Boolean {
-        val set = Hawk.get<MutableSet<String>>("notKnownRestaurants", mutableSetOf())
-        return set.contains(place.placeId)
-    }
 
     override fun resolvePlaces(places: List<ComparablePlace>, callback: (Map<ComparablePlace, RestaurantWeekData?>) -> Unit) {
         this.callback = callback

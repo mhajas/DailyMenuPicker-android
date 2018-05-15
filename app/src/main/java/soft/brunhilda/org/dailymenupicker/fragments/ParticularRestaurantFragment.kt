@@ -9,6 +9,7 @@ import soft.brunhilda.org.dailymenupicker.R
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
 import com.google.android.gms.maps.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
@@ -18,7 +19,10 @@ import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.MapView
 import kotlinx.android.synthetic.main.list_days.*
+import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
+import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
+import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 
 class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     private lateinit var place: ComparablePlace
@@ -79,22 +83,21 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
 
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
         if (context != null) {
-            val data = places.values.first()?.findTodayMenu() ?: return //TODO change to weekData.getDayData
-            day_view_monday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            day_view_monday.adapter = FoodEntityAdapter_recycler(
-                    dataTransformer.transform(place, data))
-            day_view_tuesday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            day_view_tuesday.adapter = FoodEntityAdapter_recycler(
-                    dataTransformer.transform(place, data))
-            day_view_wednesday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            day_view_wednesday.adapter = FoodEntityAdapter_recycler(
-                    dataTransformer.transform(place, data))
-            day_view_thursday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            day_view_thursday.adapter = FoodEntityAdapter_recycler(
-                    dataTransformer.transform(place, data))
-            day_view_friday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            day_view_friday.adapter = FoodEntityAdapter_recycler(
-                    dataTransformer.transform(place, data))
+            val weekData = places.values.first() ?: return
+            setDataForDate(day_view_monday, weekData, DayOfWeek.MONDAY)
+            setDataForDate(day_view_tuesday, weekData, DayOfWeek.TUESDAY)
+            setDataForDate(day_view_wednesday, weekData, DayOfWeek.WEDNESDAY)
+            setDataForDate(day_view_thursday, weekData, DayOfWeek.THURSDAY)
+            setDataForDate(day_view_friday, weekData, DayOfWeek.FRIDAY)
+        }
+    }
+
+    private fun setDataForDate(view: RecyclerView, restaurantWeekData: RestaurantWeekData, dayOfWeek: DayOfWeek){
+        val dailyData = restaurantWeekData.findMenuForDay(dayOfWeek)
+        if(dailyData!=null){
+            view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            view.adapter = FoodEntityAdapter_recycler(
+                    dataTransformer.transform(place, dailyData))
         }
     }
 

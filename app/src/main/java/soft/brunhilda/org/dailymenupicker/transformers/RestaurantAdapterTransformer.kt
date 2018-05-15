@@ -36,12 +36,14 @@ class RestaurantAdapterTransformer : Transformer<RestaurantEntityAdapterItem> {
 
                 resultList.add(RestaurantEntityAdapterItem(
                         weekData.googlePlaceData,
-                        weekData.menuForDays.map {
+                        weekData.menuForDays.filterNotNull().map{
                             it.menu.map {
                                 it.price
                             }.filterNotNull().average()
                         }.average(),
-                        weekData.menuForDays[0].soup[0].price,
+                        weekData.menuForDays.filterNotNull().map {
+                                it.soup[0].price
+                        }[0],
                         weekData
                 ))
             }

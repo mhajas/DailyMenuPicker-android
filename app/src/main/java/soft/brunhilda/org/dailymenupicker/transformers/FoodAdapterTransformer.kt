@@ -2,6 +2,7 @@ package soft.brunhilda.org.dailymenupicker.transformers
 
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
+import soft.brunhilda.org.dailymenupicker.entity.RestaurantDailyData
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 
 class FoodAdapterTransformer : Transformer<FoodEntityAdapterItem> {
@@ -15,6 +16,7 @@ class FoodAdapterTransformer : Transformer<FoodEntityAdapterItem> {
         }
     }
 
+    //TODO
     override fun transform(from: Map<ComparablePlace, RestaurantWeekData?>): MutableList<FoodEntityAdapterItem> {
         val resultList: MutableList<FoodEntityAdapterItem> = mutableListOf()
         from.forEach { (place, weekData) ->
@@ -39,6 +41,14 @@ class FoodAdapterTransformer : Transformer<FoodEntityAdapterItem> {
             }
         }
 
+        return resultList
+    }
+
+    fun transform(comparablePlace: ComparablePlace, dailyData: RestaurantDailyData): MutableList<FoodEntityAdapterItem>{
+        val resultList: MutableList<FoodEntityAdapterItem> = mutableListOf()
+        dailyData.menu.forEach{
+            resultList.add(FoodEntityAdapterItem(it, dailyData, comparablePlace))
+        }
         return resultList
     }
 }

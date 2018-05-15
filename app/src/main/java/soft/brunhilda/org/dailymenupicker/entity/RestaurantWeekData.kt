@@ -1,11 +1,11 @@
 package soft.brunhilda.org.dailymenupicker.entity
 
-import noman.googleplaces.Place
 import java.util.*
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
-data class RestaurantWeekData(var googlePlaceData: Place, var soupIncludedInPrice: Boolean, var menuForDays: List<RestaurantDailyData?>, var weekNumber: Int) {
+data class RestaurantWeekData(var googlePlaceData: ComparablePlace, var soupIncludedInPrice: Boolean, var menuForDays: List<RestaurantDailyData?>, var weekNumber: Int) {
 
-    constructor(googlePlaceData: Place, data: RestaurantWeekTransferData)
+    constructor(googlePlaceData: ComparablePlace, data: RestaurantWeekTransferData)
             : this(googlePlaceData, data.soupIncludedInPrice, data.menuForDays, data.weekNumber)
 
     fun findTodayMenu(): RestaurantDailyData? {

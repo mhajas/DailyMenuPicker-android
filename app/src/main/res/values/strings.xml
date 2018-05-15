@@ -22,4 +22,9 @@
     <string name="no_resource_message_favorite_restaurants">Nemáte žádné oblíbené restaurace</string>
     <string name="no_resource_message_near_food">Nenašli sa žiadne jedlá v okolí</string>
     <string name="no_resource_message_near_restaurant">Nenašli sa žiadne restaurácie v okolí</string>
+    <string name="monday_name">Pondelok</string>
+    <string name="tuesday_name">Utorok</string>
+    <string name="wednesday_name">Streda</string>
+    <string name="thursday_name">Štvrtok</string>
+    <string name="friday_name">Piatok</string>
 </resources>

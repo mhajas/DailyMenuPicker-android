@@ -6,29 +6,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import soft.brunhilda.org.dailymenupicker.R
-import android.widget.Toast
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import com.google.android.gms.maps.*
-import kotlinx.android.synthetic.main.content_scrolling.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter_recycler
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
-import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.MapView
+import kotlinx.android.synthetic.main.list_days.*
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 
 class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
-    private var isFavourite = false
     private lateinit var place: ComparablePlace
     private lateinit var mapView: MapView
 
     private val dataResolver = CachedRestDataResolver()
     private val dataTransformer = FoodAdapterTransformer.getInstance()
-    private val dataEvaluator = FoodEvaluator.getInstance()
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,30 +33,44 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
         place = this.arguments.getSerializable("googlePlace") as ComparablePlace
 
         val myFab = view?.findViewById(R.id.fab) as FloatingActionButton
-        if(databaseManager.isPlaceInDb(place.placeId)){
+        setUpFavouriteButton(databaseManager, myFab, view)
+
+        placesPreparationIsFinished(mutableSetOf(place))
+    }
+
+    private fun setUpFavouriteButton(databaseManager: DatabaseManager, myFab: FloatingActionButton, view: View) {
+        if (databaseManager.isPlaceInDb(place.placeId)) {
             myFab.setImageResource(android.R.drawable.ic_delete)
-        }else{
+        } else {
             myFab.setImageResource(android.R.drawable.ic_menu_save)
         }
         myFab.setOnClickListener {
             if (databaseManager.isPlaceInDb(place.placeId)) {
                 databaseManager.deleteFavouritePlace(place)
-                Toast.makeText(activity, "Place was removed from the favourite places",
-                        Toast.LENGTH_LONG).show()
-                isFavourite = false
+                Snackbar
+                        .make(view, "Place was removed from the favourite places", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO",View.OnClickListener { view ->
+                            Snackbar
+                                    .make(view, "Place was added to the favourite places!", Snackbar.LENGTH_SHORT)
+                                    .show()
+                            myFab.callOnClick()
+                        })
+                        .show()
                 myFab.setImageResource(android.R.drawable.ic_menu_save)
             } else {
                 databaseManager.addFavouritePlace(place)
-                Toast.makeText(activity, "Place was added to the favourite places",
-                        Toast.LENGTH_LONG).show()
-                isFavourite = true
+                Snackbar
+                        .make(view, "Place was added to the favourite places", Snackbar.LENGTH_LONG)
+                        .setAction("UNdo",View.OnClickListener { view ->
+                            Snackbar
+                                    .make(view, "Place was removed from the favourite places!", Snackbar.LENGTH_SHORT)
+                                    .show()
+                            myFab.callOnClick()
+                        })
+                        .show()
                 myFab.setImageResource(android.R.drawable.ic_delete)
             }
         }
-        Toast.makeText(activity, "Place name: ${place.name} placeID: ${place.placeId}",
-            Toast.LENGTH_LONG).show()
-
-        placesPreparationIsFinished(mutableSetOf(place))
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
@@ -68,15 +79,22 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
 
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
         if (context != null) {
-            var adapterItems = dataTransformer.transform(places)
-            val database = DatabaseManager(context)
-            adapterItems = dataEvaluator.evaluate(adapterItems, database.getAllFavouritePlaces(), database.getAllFavouriteIngredients())
-
-            adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
-
-            restaurant_food_recycle_view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            val adapter = FoodEntityAdapter_recycler(adapterItems)
-            restaurant_food_recycle_view.adapter = adapter
+            val data = places.values.first()?.findTodayMenu() ?: return //TODO change to weekData.getDayData
+            day_view_monday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            day_view_monday.adapter = FoodEntityAdapter_recycler(
+                    dataTransformer.transform(place, data))
+            day_view_tuesday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            day_view_tuesday.adapter = FoodEntityAdapter_recycler(
+                    dataTransformer.transform(place, data))
+            day_view_wednesday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            day_view_wednesday.adapter = FoodEntityAdapter_recycler(
+                    dataTransformer.transform(place, data))
+            day_view_thursday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            day_view_thursday.adapter = FoodEntityAdapter_recycler(
+                    dataTransformer.transform(place, data))
+            day_view_friday.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            day_view_friday.adapter = FoodEntityAdapter_recycler(
+                    dataTransformer.transform(place, data))
         }
     }
 

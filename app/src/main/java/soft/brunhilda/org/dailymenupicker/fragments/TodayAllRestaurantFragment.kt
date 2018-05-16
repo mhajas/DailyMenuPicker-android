@@ -16,6 +16,7 @@ import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.RestaurantEntityAdapter
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
+import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.RestaurantEvaluator
 import soft.brunhilda.org.dailymenupicker.preparers.NearestPlacesDataPreparer
@@ -55,7 +56,10 @@ class TodayAllRestaurantFragment : ParentFragment(){
         if (context != null) {
             var adapterItems = dataTransformer.transform(places)
             val database = DatabaseManager(context)
-            adapterItems = dataEvaluator.evaluate(adapterItems, database.getAllFavouritePlaces(), database.getAllFavouriteIngredients())
+            adapterItems = dataEvaluator.evaluateForDay(adapterItems,
+                    database.getAllFavouritePlaces(),
+                    database.getAllFavouriteIngredients(),
+                    DayOfWeek.getToday())
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
 

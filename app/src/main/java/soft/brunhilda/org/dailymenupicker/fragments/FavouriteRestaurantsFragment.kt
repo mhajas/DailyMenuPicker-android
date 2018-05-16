@@ -4,10 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.LinearLayout
 import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.android.synthetic.main.content_all_restaurants.*
@@ -66,17 +66,17 @@ class FavouriteRestaurantsFragment : ParentFragment() {
                 no_resource_message_text.text = context.resources.getString(R.string.no_resource_message_favorite_restaurants)
             } else {
 
-                today_restaurant_list_view.adapter = RestaurantEntityAdapter(context, adapterItems)
-                today_restaurant_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                today_restaurant_list_view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+                today_restaurant_list_view.adapter = RestaurantEntityAdapter(adapterItems, {
                     val fragment = ParticularRestaurantFragment()
                     fragment.arguments = Bundle()
-                    fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
+                    fragment.arguments.putSerializable("googlePlace", it)
                     activity.fragmentManager
                             .beginTransaction()
                             .addToBackStack(null)
                             .replace(R.id.content_main, fragment)
                             .commit()
-                }
+                })
             }
 
             val animatedView: SpinKitView? = view?.findViewById(R.id.restaurants_loading_animation)

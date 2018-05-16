@@ -19,7 +19,8 @@
         android:animateLayoutChanges="true"
         />
 
-    <ListView
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/today_restaurant_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

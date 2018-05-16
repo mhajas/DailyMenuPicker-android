@@ -14,8 +14,8 @@ import java.util.*
 
 class FoodEntityAdapter(
         val foodEntities: List<FoodEntityAdapterItem>,
-        val callbackButton: (ComparablePlace) -> Unit,
-        val callbackView: (ComparablePlace) -> Unit
+        val callbackButton: (FoodEntityAdapterItem) -> Unit,
+        val callbackView: (FoodEntityAdapterItem) -> Unit
 ): RecyclerView.Adapter<FoodEntityAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
@@ -40,11 +40,11 @@ class FoodEntityAdapter(
         holder?.evaluation?.text = String.format("%.2f", food.preferenceEvaluation)
 
         holder?.button?.setOnClickListener {
-            callbackButton(food.googlePlace)
+            callbackButton(food)
         }
 
         holder?.itemView?.setOnClickListener {
-            callbackView(food.googlePlace)
+            callbackView(food)
         }
     }
 

@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
-class MapViewManager(
+class   MapViewManager(
         private val activity: Activity,
         private val context: Context,
         private val googleMap: GoogleMap,

@@ -9,5 +9,6 @@ import soft.brunhilda.org.dailymenupicker.ComparablePlace
 data class FoodEntityAdapterItem (
         var foodEntity: FoodEntity,
         var restaurantDailyData: RestaurantDailyData,
-        var googlePlace: ComparablePlace
+        var googlePlace: ComparablePlace,
+        var dayOfWeek: DayOfWeek
 ) : EvaluatableEntity()

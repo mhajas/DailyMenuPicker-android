@@ -12,10 +12,7 @@ import android.widget.Toast
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import soft.brunhilda.org.dailymenupicker.fragments.FavoriteIngredientsFragment
-import soft.brunhilda.org.dailymenupicker.fragments.FavouriteRestaurantsFragment
-import soft.brunhilda.org.dailymenupicker.fragments.TodayAllFoodFragment
-import soft.brunhilda.org.dailymenupicker.fragments.TodayAllRestaurantFragment
+import soft.brunhilda.org.dailymenupicker.fragments.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +49,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_favorite_restaurants -> {
                 fragmentManager.beginTransaction().replace(R.id.content_main, FavouriteRestaurantsFragment.getInstance()).commit()
+            }
+            R.id.nav_agenda -> {
+                fragmentManager.beginTransaction().replace(R.id.content_main, AgendaFragment.getInstance()).commit()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

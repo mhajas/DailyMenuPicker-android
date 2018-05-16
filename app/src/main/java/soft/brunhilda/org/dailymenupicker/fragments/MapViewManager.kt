@@ -4,7 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.LocationManager
+import android.location.Location
 import android.support.v4.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,18 +21,23 @@ class   MapViewManager(
         private val googleMap: GoogleMap,
         private val place: ComparablePlace
 ){
-    fun createMap(){
+    fun createMap(location: Location?){
         if(!this.checkPermission()){
             return
         }
         googleMap.uiSettings.setAllGesturesEnabled(true)
         googleMap.isMyLocationEnabled = true
 
-        val locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val myLatlng = LatLng(
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude,
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).longitude)
         val markerLatlng = LatLng(place.latitude, place.longitude)
+        val boundsBuilder = LatLngBounds.Builder().include(markerLatlng)
+
+        if (location != null) {
+            val myLatlng = LatLng(location.latitude, location.longitude)
+            boundsBuilder.include(myLatlng)
+        }
+        val bounds = boundsBuilder.build()
+
+        googleMap.setOnCameraChangeListener(GoogleMap.OnCameraChangeListener { googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)) })
 
         val cameraPosition: CameraPosition = CameraPosition.Builder()
                 .target(markerLatlng)
@@ -42,12 +47,6 @@ class   MapViewManager(
         googleMap.addMarker(MarkerOptions()
                 .position(markerLatlng)
                 .title(place.name)).showInfoWindow()
-
-        val bounds = LatLngBounds.Builder()
-                .include(markerLatlng)
-                .include(myLatlng)
-                .build()
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
     }
 
     fun checkPermission(): Boolean{

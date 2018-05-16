@@ -2,24 +2,29 @@ package soft.brunhilda.org.dailymenupicker.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import soft.brunhilda.org.dailymenupicker.R
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.OnMapReadyCallback
+import io.nlopez.smartlocation.SmartLocation
+import io.nlopez.smartlocation.location.config.LocationParams
+import kotlinx.android.synthetic.main.list_days.*
 import com.google.android.gms.maps.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
+import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
+import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
+import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
-import com.google.android.gms.maps.MapView
-import kotlinx.android.synthetic.main.list_days.*
-import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
-import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
 
 class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     private lateinit var place: ComparablePlace
@@ -85,15 +90,23 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val mapManager = MapViewManager(activity, context, googleMap,place)
-        if (mapManager.checkPermission())
-            mapManager.createMap()
-        else
-            requestPermissions(
-                    arrayOf(
-                            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                            android.Manifest.permission.ACCESS_FINE_LOCATION
-                    ),1)
+
+        SmartLocation.with(context).location()
+                .config(LocationParams.BEST_EFFORT)
+                .start({})
+
+        val location = SmartLocation.with(context).location().lastLocation
+
+
+            val mapManager = MapViewManager(activity, context, googleMap, place)
+            if (mapManager.checkPermission())
+                mapManager.createMap(location)
+            else
+                requestPermissions(
+                        arrayOf(
+                                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                                android.Manifest.permission.ACCESS_FINE_LOCATION
+                        ), 1)
     }
 
     override fun onResume() {

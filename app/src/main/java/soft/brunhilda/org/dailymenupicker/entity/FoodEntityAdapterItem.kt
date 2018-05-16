@@ -1,6 +1,7 @@
 package soft.brunhilda.org.dailymenupicker.entity
 
 import noman.googleplaces.Place
+import soft.brunhilda.org.dailymenupicker.ComparablePlace
 
 /**
  * Created by mhajas on 4/21/18.
@@ -8,5 +9,5 @@ import noman.googleplaces.Place
 data class FoodEntityAdapterItem (
         var foodEntity: FoodEntity,
         var restaurantDailyData: RestaurantDailyData,
-        var googlePlace: Place
-) : EvaluatableEntity() {}
+        var googlePlace: ComparablePlace
+) : EvaluatableEntity()

@@ -4,11 +4,12 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.github.ybq.android.spinkit.SpinKitView
 import kotlinx.android.synthetic.main.content_food_today.*
 import kotlinx.android.synthetic.main.no_resource_layout.*
@@ -57,36 +58,29 @@ class TodayAllFoodFragment : ParentFragment() {
             adapterItems = dataEvaluator.evaluate(adapterItems, database.getAllFavouritePlaces(), database.getAllFavouriteIngredients())
 
             adapterItems.sortWith(compareByDescending { it.preferenceEvaluation })
-            today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
-
-            today_food_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
-                val fragment = ParticularRestaurantFragment()
-                fragment.arguments = Bundle()
-                fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
-                fragmentManager
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.content_main, fragment)
-                        .commit()
-            }
 
             if (adapterItems.isEmpty()) {
                 today_food_list_view.visibility = View.GONE
                 no_resource_message.visibility = View.VISIBLE
                 no_resource_message_text.text = context.resources.getString(R.string.no_resource_message_near_food)
             } else {
-                today_food_list_view.adapter = FoodEntityAdapter(context, adapterItems)
-
-                today_food_list_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+                val callbackAddAgenda = { place: ComparablePlace ->
+                    Toast.makeText(context, "Added to agenda", Toast.LENGTH_LONG).show()
+                }
+                val callbackToRestaurant: (ComparablePlace) -> Unit = { place: ComparablePlace -> run{
                     val fragment = ParticularRestaurantFragment()
                     fragment.arguments = Bundle()
-                    fragment.arguments.putSerializable("googlePlace", ComparablePlace(adapterItems[position].googlePlace))
+                    fragment.arguments.putSerializable("googlePlace", place)
                     activity.fragmentManager
                             .beginTransaction()
                             .addToBackStack(null)
                             .replace(R.id.content_main, fragment)
                             .commit()
+                    }
                 }
+
+                today_food_list_view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+                today_food_list_view.adapter = FoodEntityAdapter(adapterItems, callbackAddAgenda, callbackToRestaurant)
             }
 
             if (!animated) {

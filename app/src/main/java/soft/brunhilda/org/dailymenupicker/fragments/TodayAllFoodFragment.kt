@@ -17,6 +17,7 @@ import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
+import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.evaluators.FoodEvaluator
@@ -65,12 +66,10 @@ class TodayAllFoodFragment : ParentFragment() {
                 no_resource_message.visibility = View.VISIBLE
                 no_resource_message_text.text = context.resources.getString(R.string.no_resource_message_near_food)
             } else {
-                val callbackAddAgenda = ButtonManager(context)::agendaAddButton
-                val callbackToRestaurant  =  ButtonManager(context)::goToRestaurant
                 today_food_list_view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
                 today_food_list_view.adapter = FoodEntityAdapter(adapterItems,
-                        {callbackAddAgenda(it, context)},
-                        {callbackToRestaurant(it, activity)}
+                        ButtonManager().agendaAddButton(context, DayOfWeek.getToday()),
+                        ButtonManager().goToRestaurant(activity)
                 )
             }
 

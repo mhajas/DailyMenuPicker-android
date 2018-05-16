@@ -45,7 +45,7 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
         } else {
             myFab.setImageResource(R.drawable.ic_like)
         }
-        myFab.setOnClickListener(ButtonManager(context).addToFavourite(databaseManager, myFab, place))
+        myFab.setOnClickListener(ButtonManager().addToFavourite(databaseManager, myFab, place))
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
@@ -64,14 +64,13 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     }
 
     private fun setDataForDate(view: RecyclerView, restaurantWeekData: RestaurantWeekData, dayOfWeek: DayOfWeek){
-        val callbackAddAgenda = ButtonManager(context)::agendaAddButton
         val dailyData = restaurantWeekData.findMenuForDay(dayOfWeek)
         if(dailyData!=null){
             view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
             view.adapter = FoodEntityAdapter(
-                    dataTransformer.transform(place, dailyData),
-                    {callbackAddAgenda(it, context)},
-                    {callbackAddAgenda(it, context)})
+                    dataTransformer.transform(place, dailyData, dayOfWeek),
+                    ButtonManager().agendaAddButton(context, dayOfWeek),
+                    ButtonManager().agendaAddButtonLayout())
         }
     }
 

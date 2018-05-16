@@ -5,17 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.TextView
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
+import soft.brunhilda.org.dailymenupicker.database.AgendaManager
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 import java.text.NumberFormat
 import java.util.*
 
 class FoodEntityAdapter(
         val foodEntities: List<FoodEntityAdapterItem>,
-        val callbackButton: (FoodEntityAdapterItem) -> Unit,
-        val callbackView: (FoodEntityAdapterItem) -> Unit
+        val callbackButton: (View, FoodEntityAdapterItem) -> Unit,
+        val callbackView: (View, FoodEntityAdapterItem) -> Unit
 ): RecyclerView.Adapter<FoodEntityAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
@@ -39,12 +41,14 @@ class FoodEntityAdapter(
 
         holder?.evaluation?.text = String.format("%.2f", food.preferenceEvaluation)
 
+        holder?.button?.isChecked = AgendaManager().isInAgenda(food, food.dayOfWeek)
+
         holder?.button?.setOnClickListener {
-            callbackButton(food)
+            callbackButton(it, food)
         }
 
         holder?.itemView?.setOnClickListener {
-            callbackView(food)
+            callbackView(it, food)
         }
     }
 

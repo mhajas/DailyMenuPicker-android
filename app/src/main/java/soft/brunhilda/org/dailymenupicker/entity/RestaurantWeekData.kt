@@ -34,5 +34,11 @@ data class RestaurantWeekData(var googlePlaceData: ComparablePlace, var soupIncl
 }
 
 enum class DayOfWeek {
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SUNDAY, SATURDAY;
+
+    companion object {
+        fun getToday(): DayOfWeek{
+            return values().get(Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 2)
+        }
+    }
 }

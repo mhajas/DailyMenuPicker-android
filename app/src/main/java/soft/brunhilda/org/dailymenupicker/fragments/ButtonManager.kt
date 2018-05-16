@@ -6,29 +6,62 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.view.View
+import android.widget.CheckBox
 import android.widget.Toast
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
+import soft.brunhilda.org.dailymenupicker.database.AgendaManager
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
+import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
 import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 
-class ButtonManager(val context: Context){
+class ButtonManager{
 
+    var agendaManager: AgendaManager = AgendaManager()
 
-    fun agendaAddButton(food: FoodEntityAdapterItem, context: Context){
-        Toast.makeText(context, "Added to agenda", Toast.LENGTH_LONG).show()
-        //TODO agenda
+    fun agendaAddButton(context: Context, dayOfWeek: DayOfWeek): (View,FoodEntityAdapterItem) -> Unit{
+        return { view: View, food: FoodEntityAdapterItem ->
+            if(agendaManager.isInAgenda(food,dayOfWeek)){
+                agendaManager.deleteFromAgenda(food, dayOfWeek)
+                Toast.makeText(context, "Food was removed from agenda",Toast.LENGTH_LONG).show()
+
+            }else{
+                agendaManager.addToAgenda(food, dayOfWeek)
+                Toast.makeText(context, "Food was added to agenda",Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
-    fun goToRestaurant(food: FoodEntityAdapterItem, activity: Activity){
-        val fragment = ParticularRestaurantFragment()
-        fragment.arguments = Bundle()
-        fragment.arguments.putSerializable("googlePlace", food.googlePlace)
-        activity.fragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.content_main, fragment)
-                .commit()
+    fun agendaAddButtonLayout(): (View,FoodEntityAdapterItem) -> Unit{
+        return { view: View, food: FoodEntityAdapterItem ->
+           view.findViewById<CheckBox>(R.id.agenda_button).performClick()
+        }
+    }
+
+    fun inAgendaButton(activity: Activity, context: Context, dayOfWeek: DayOfWeek): (View, FoodEntityAdapterItem) -> Unit{
+        return { view: View, food: FoodEntityAdapterItem ->
+            agendaAddButton(context, dayOfWeek).invoke(view,food)
+            val fragment = AgendaFragment()
+            fragment.arguments = Bundle()
+            fragment.arguments.putSerializable("googlePlace", food.googlePlace)
+            activity.fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_main, fragment)
+                    .commit()
+        }
+    }
+
+    fun goToRestaurant(activity: Activity): (View,FoodEntityAdapterItem) -> Unit {
+        return { view: View, food: FoodEntityAdapterItem ->
+            val fragment = ParticularRestaurantFragment()
+            fragment.arguments = Bundle()
+            fragment.arguments.putSerializable("googlePlace", food.googlePlace)
+            activity.fragmentManager
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.content_main, fragment)
+                    .commit()
+        }
     }
 
     fun addToFavourite(databaseManager: DatabaseManager,
@@ -39,7 +72,7 @@ class ButtonManager(val context: Context){
                 databaseManager.deleteFavouritePlace(place)
                 Snackbar
                         .make(it, "Place was removed from the favourite places", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", View.OnClickListener { view ->
+                        .setAction("Undo", View.OnClickListener { view ->
                             Snackbar
                                     .make(view, "Place was added to the favourite places!", Snackbar.LENGTH_SHORT)
                                     .show()
@@ -51,7 +84,7 @@ class ButtonManager(val context: Context){
                 databaseManager.addFavouritePlace(place)
                 Snackbar
                         .make(it, "Place was added to the favourite places", Snackbar.LENGTH_LONG)
-                        .setAction("UNdo", View.OnClickListener { view ->
+                        .setAction("Undo", View.OnClickListener { view ->
                             Snackbar
                                     .make(view, "Place was removed from the favourite places!", Snackbar.LENGTH_SHORT)
                                     .show()

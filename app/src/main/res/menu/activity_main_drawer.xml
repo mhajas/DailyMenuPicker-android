@@ -22,5 +22,9 @@
             android:id="@+id/nav_favorite_restaurants"
             android:icon="@drawable/ic_favorite_restaurants"
             android:title="@string/favorite_restaurants_header" />
+        <item
+            android:id="@+id/nav_agenda"
+            android:icon="@drawable/ic_agenda"
+            android:title="@string/agenda_header" />
     </group>
 </menu>

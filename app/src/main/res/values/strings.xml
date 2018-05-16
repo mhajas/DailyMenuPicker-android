@@ -31,4 +31,5 @@
     <string name="restaurant_list_average_price">Priemerna cena</string>
     <string name="restaurant_list_soup_price">Cena polievky</string>
     <string name="restaurant_list_rating">Hodnotenie</string>
+    <string name="agenda_header">Týžďnový plán</string>
 </resources>

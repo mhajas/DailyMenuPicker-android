@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -19,13 +20,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/restaurant_list_average_price_layout"
+        >
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight=".75"
-            android:text="Priemerna cena"
+            android:text="@string/restaurant_list_average_price"
             android:textSize="12sp"
             android:textStyle="italic"
             />
@@ -42,13 +45,15 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/restaurant_list_price_of_soup"
+        >
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight=".75"
-            android:text="Cena polievky"
+            android:text="@string/restaurant_list_soup_price"
             android:textSize="12sp"
             android:textStyle="italic"
             />
@@ -66,13 +71,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/restaurant_list_rating"
+        >
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight=".75"
-            android:text="Hodnotenie"
+            android:text="@string/restaurant_list_rating"
             android:textSize="12sp"
             android:textStyle="italic"
             />
@@ -87,5 +94,44 @@
             />
 
     </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/restaurant_no_food_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:textAlignment="center"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_no_food"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="22dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight=".75"
+            android:text="@string/no_food_for_restaurant_message"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

@@ -4,7 +4,5 @@ import noman.googleplaces.Place
 
 data class RestaurantEntityAdapterItem (
         val googlePlace: Place,
-        val averagePrice: Double,
-        val soupPrice: Int?,
-        val restaurantWeekData: RestaurantWeekData
+        val restaurantWeekData: RestaurantWeekData?
 ) : EvaluatableEntity()

@@ -19,34 +19,9 @@ class RestaurantAdapterTransformer : Transformer<RestaurantEntityAdapterItem> {
         val resultList: MutableList<RestaurantEntityAdapterItem> = mutableListOf()
 
         from.forEach { (place, weekData) ->
-            run {
-                if (weekData == null) {
-                    println("Didn't find any menu for restaurant ${place.name}")
-                    // TODO: show something which says sorry for place place we didn't find any menu, directly in adapter list
-                    return@run // end run for this restaurant
-                }
-
-                val todayData = weekData.findTodayMenu()
-
-                if (todayData == null) {
-                    println("Didn't find any today menu for restaurant ${place.name}")
-                    // TODO: show something which says sorry for place place we didn't find any menu, directly in adapter list
-                    return@run // end run for this restaurant
-                }
-
-                resultList.add(RestaurantEntityAdapterItem(
-                        weekData.googlePlaceData,
-                        weekData.menuForDays.filterNotNull().map{
-                            it.menu.map {
-                                it.price
-                            }.filterNotNull().average()
-                        }.average(),
-                        weekData.menuForDays.filterNotNull().map {
-                                it.soup[0].price
-                        }[0],
-                        weekData
-                ))
-            }
+            resultList.add(RestaurantEntityAdapterItem(
+                    weekData?.googlePlaceData ?: place,
+                    weekData))
         }
 
         return resultList

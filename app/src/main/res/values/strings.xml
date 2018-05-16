@@ -27,4 +27,8 @@
     <string name="wednesday_name">Streda</string>
     <string name="thursday_name">Štvrtok</string>
     <string name="friday_name">Piatok</string>
+    <string name="no_food_for_restaurant_message">Pre túto reštauráciu sme nenašli žiadne jedlo</string>
+    <string name="restaurant_list_average_price">Priemerna cena</string>
+    <string name="restaurant_list_soup_price">Cena polievky</string>
+    <string name="restaurant_list_rating">Hodnotenie</string>
 </resources>

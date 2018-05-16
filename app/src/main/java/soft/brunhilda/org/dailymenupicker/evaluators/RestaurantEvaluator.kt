@@ -29,10 +29,10 @@ class RestaurantEvaluator : Evaluator<RestaurantEntityAdapterItem> {
                 restaurantEntityAdapterItem.preferenceEvaluation += 1
             }
 
-            val todayData = restaurantEntityAdapterItem.restaurantWeekData.findTodayMenu()
+            val todayData = restaurantEntityAdapterItem.restaurantWeekData?.findTodayMenu()
 
             // evaluate all food served today and get average of it as final score
-            if(todayData!=null){
+            if(todayData != null){
                 val foodEvaluations = mutableListOf<Double>()
                 todayData.menu.forEach {
                     val containedIngrediets = it.tags?.intersect(favoriteIngredients.map { it.ingredient })

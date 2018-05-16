@@ -92,7 +92,7 @@ class TodayAllFoodFragment : ParentFragment() {
             if (!animated) {
                 val animatedView: SpinKitView? = view?.findViewById(R.id.foods_loading_animation)
                 val params = animatedView?.layoutParams as LinearLayout.LayoutParams
-                val animator = ValueAnimator.ofInt(params.topMargin, -230)
+                val animator = ValueAnimator.ofInt(params.topMargin, -animatedView.height)
 
                 animatedView.animate()
                         .alpha(0.0f)

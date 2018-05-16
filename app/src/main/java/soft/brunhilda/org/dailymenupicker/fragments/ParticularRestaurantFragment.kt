@@ -2,6 +2,7 @@ package soft.brunhilda.org.dailymenupicker.fragments
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -9,14 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import io.nlopez.smartlocation.SmartLocation
 import io.nlopez.smartlocation.location.config.LocationParams
 import kotlinx.android.synthetic.main.list_days.*
-import com.google.android.gms.maps.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.R
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
@@ -60,15 +59,15 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     private fun placesResolvingIsFinished(places: Map<ComparablePlace, RestaurantWeekData?>) {
         if (context != null) {
             val weekData = places.values.first() ?: return
-            setDataForDate(day_view_monday, weekData, DayOfWeek.MONDAY)
-            setDataForDate(day_view_tuesday, weekData, DayOfWeek.TUESDAY)
-            setDataForDate(day_view_wednesday, weekData, DayOfWeek.WEDNESDAY)
-            setDataForDate(day_view_thursday, weekData, DayOfWeek.THURSDAY)
-            setDataForDate(day_view_friday, weekData, DayOfWeek.FRIDAY)
+            setDataForDate(day_view_monday, monday_no_food_message, weekData, DayOfWeek.MONDAY)
+            setDataForDate(day_view_tuesday, tuesday_no_food_message, weekData, DayOfWeek.TUESDAY)
+            setDataForDate(day_view_wednesday, wednesday_no_food_message, weekData, DayOfWeek.WEDNESDAY)
+            setDataForDate(day_view_thursday, thursday_no_food_message, weekData, DayOfWeek.THURSDAY)
+            setDataForDate(day_view_friday, friday_no_food_message, weekData, DayOfWeek.FRIDAY)
         }
     }
 
-    private fun setDataForDate(view: RecyclerView, restaurantWeekData: RestaurantWeekData, dayOfWeek: DayOfWeek){
+    private fun setDataForDate(view: RecyclerView, noFoodView: ConstraintLayout, restaurantWeekData: RestaurantWeekData, dayOfWeek: DayOfWeek){
         val dailyData = restaurantWeekData.findMenuForDay(dayOfWeek)
         if(dailyData!=null){
             view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
@@ -76,6 +75,12 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
                     dataTransformer.transform(place, dailyData, dayOfWeek),
                     ButtonManager().agendaAddButton(context, dayOfWeek),
                     ButtonManager().agendaAddButtonLayout())
+
+            view.visibility = View.VISIBLE
+            noFoodView.visibility = View.GONE
+        } else {
+            noFoodView.visibility = View.VISIBLE
+            view.visibility = View.GONE
         }
     }
 

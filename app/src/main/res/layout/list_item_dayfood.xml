@@ -1,100 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
+    android:weightSum="4"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    android:orientation="horizontal"
     android:background="@drawable/card_background"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_weight=".80"
-        android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp">
+    <android.support.v7.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+    >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_height="wrap_content"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="0dp"
-                android:layout_weight=".75"
-                android:id="@+id/dayfood_item_name"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:paddingRight="5dp"
-                tools:text="Hovädzina na prírodno s knedľu"
-                />
+                android:layout_weight=".80"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight=".75"
+                        android:id="@+id/dayfood_item_name"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:paddingRight="5dp"
+                        tools:text="Hovädzina na prírodno s knedľu"
+                        />
 
-            <TextView
-                android:layout_height="wrap_content"
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.25"
+                        android:id="@+id/dayfood_item_price"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:text="150 czk"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight=".75"
+                        android:id="@+id/dayfood_soup"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
+                        tools:text="Prdelačka"
+                        />
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:id="@+id/dayfood_soup_price"
+                        android:textSize="12sp"
+                        tools:text="v cene"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight=".75"
+                        android:text="Hodnotenie"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
+                        />
+
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight=".25"
+                        android:id="@+id/dayfood_evaluation"
+                        android:textSize="12sp"
+                        tools:text="v cene"
+                        />
+
+                </LinearLayout>
+            </LinearLayout>
+            <CheckBox
+                android:id="@+id/agenda_button"
                 android:layout_width="0dp"
-                android:layout_weight="0.25"
-                android:id="@+id/dayfood_item_price"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:text="150 czk"
+                android:layout_weight=".10"
+                android:layout_height="match_parent"
+                android:button="@drawable/selector"
+                android:focusable="false"
                 />
-
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight=".75"
-                android:id="@+id/dayfood_soup"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                tools:text="Prdelačka"
-                />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight=".25"
-                android:id="@+id/dayfood_soup_price"
-                android:textSize="12sp"
-                tools:text="v cene"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight=".75"
-                android:text="Hodnotenie"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:layout_weight=".25"
-                android:id="@+id/dayfood_evaluation"
-                android:textSize="12sp"
-                tools:text="v cene"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/agenda_button"
-        android:layout_width="0dp"
-        android:layout_weight=".10"
-        android:layout_height="match_parent"
-        android:button="@drawable/selector"
-        android:focusable="false"
-        />
+    </android.support.v7.widget.CardView>
 </LinearLayout>

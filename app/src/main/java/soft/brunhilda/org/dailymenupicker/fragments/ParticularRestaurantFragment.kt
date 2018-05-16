@@ -11,18 +11,17 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.google.android.gms.maps.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
-import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter_recycler
+import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.entity.RestaurantWeekData
 import soft.brunhilda.org.dailymenupicker.resolvers.CachedRestDataResolver
 import soft.brunhilda.org.dailymenupicker.transformers.FoodAdapterTransformer
 import com.google.android.gms.maps.MapView
 import kotlinx.android.synthetic.main.list_days.*
-import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
 import soft.brunhilda.org.dailymenupicker.database.DatabaseManager
 import soft.brunhilda.org.dailymenupicker.entity.DayOfWeek
-import soft.brunhilda.org.dailymenupicker.entity.FoodEntityAdapterItem
 
 class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     private lateinit var place: ComparablePlace
@@ -93,11 +92,15 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     }
 
     private fun setDataForDate(view: RecyclerView, restaurantWeekData: RestaurantWeekData, dayOfWeek: DayOfWeek){
+        val callbackAddAgenda = { place: ComparablePlace ->
+            Toast.makeText(context, "Added to agenda",Toast.LENGTH_LONG).show()
+        }
+
         val dailyData = restaurantWeekData.findMenuForDay(dayOfWeek)
         if(dailyData!=null){
             view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            view.adapter = FoodEntityAdapter_recycler(
-                    dataTransformer.transform(place, dailyData))
+            view.adapter = FoodEntityAdapter(
+                    dataTransformer.transform(place, dailyData), callbackAddAgenda, callbackAddAgenda)
         }
     }
 

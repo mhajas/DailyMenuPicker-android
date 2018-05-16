@@ -7,11 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import soft.brunhilda.org.dailymenupicker.R
 import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
-import android.widget.Toast
 import com.google.android.gms.maps.*
 import soft.brunhilda.org.dailymenupicker.ComparablePlace
 import soft.brunhilda.org.dailymenupicker.adapters.FoodEntityAdapter
@@ -47,33 +45,7 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
         } else {
             myFab.setImageResource(R.drawable.ic_like)
         }
-        myFab.setOnClickListener {
-            if (databaseManager.isPlaceInDb(place.placeId)) {
-                databaseManager.deleteFavouritePlace(place)
-                Snackbar
-                        .make(view, "Place was removed from the favourite places", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO",View.OnClickListener { view ->
-                            Snackbar
-                                    .make(view, "Place was added to the favourite places!", Snackbar.LENGTH_SHORT)
-                                    .show()
-                            myFab.callOnClick()
-                        })
-                        .show()
-                myFab.setImageResource(R.drawable.ic_like)
-            } else {
-                databaseManager.addFavouritePlace(place)
-                Snackbar
-                        .make(view, "Place was added to the favourite places", Snackbar.LENGTH_LONG)
-                        .setAction("UNdo",View.OnClickListener { view ->
-                            Snackbar
-                                    .make(view, "Place was removed from the favourite places!", Snackbar.LENGTH_SHORT)
-                                    .show()
-                            myFab.callOnClick()
-                        })
-                        .show()
-                myFab.setImageResource(R.drawable.ic_dislike)
-            }
-        }
+        myFab.setOnClickListener(ButtonManager(context).addToFavourite(databaseManager, myFab, place))
     }
 
     private fun placesPreparationIsFinished(places: Set<ComparablePlace>) {
@@ -92,15 +64,14 @@ class ParticularRestaurantFragment : ParentFragment(), OnMapReadyCallback {
     }
 
     private fun setDataForDate(view: RecyclerView, restaurantWeekData: RestaurantWeekData, dayOfWeek: DayOfWeek){
-        val callbackAddAgenda = { place: ComparablePlace ->
-            Toast.makeText(context, "Added to agenda",Toast.LENGTH_LONG).show()
-        }
-
+        val callbackAddAgenda = ButtonManager(context)::agendaAddButton
         val dailyData = restaurantWeekData.findMenuForDay(dayOfWeek)
         if(dailyData!=null){
             view.layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
             view.adapter = FoodEntityAdapter(
-                    dataTransformer.transform(place, dailyData), callbackAddAgenda, callbackAddAgenda)
+                    dataTransformer.transform(place, dailyData),
+                    {callbackAddAgenda(it, context)},
+                    {callbackAddAgenda(it, context)})
         }
     }
 

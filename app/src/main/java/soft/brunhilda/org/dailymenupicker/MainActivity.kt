@@ -13,6 +13,12 @@ import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import soft.brunhilda.org.dailymenupicker.fragments.*
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import soft.brunhilda.org.dailymenupicker.notification.AlarmReceiver
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -32,7 +38,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Hawk.init(this).build() // no idea where to put this
 
-
+         /*Prevent to create notification again, when user open application via notification in the SAME MINUTE*/
+        if(!intent.getBooleanExtra("fromNotification",false)){
+            setUpNotification()
+        }
     }
 
     fun displaySelectedScreen(id: Int){
@@ -89,5 +98,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
+    }
+
+    /**
+     * This function configure every day notification
+     * source: https://ptyagicodecamp.github.io/scheduling-repeating-local-notifications-using-alarm-manager.html
+     * TODO implement to reaction when device was restarted (^^last section)
+     */
+    private fun setUpNotification(){
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 9)
+        calendar.set(Calendar.MINUTE, 46) // TODO set up this values on the settings page
+
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val alarmIntent = PendingIntent.getBroadcast(this, AlarmReceiver.NOTIFICATION_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,  AlarmManager.INTERVAL_DAY, alarmIntent) //better for battery life
     }
 }

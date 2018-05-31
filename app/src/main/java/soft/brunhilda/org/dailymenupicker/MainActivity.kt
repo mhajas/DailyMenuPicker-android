@@ -1,6 +1,10 @@
 package soft.brunhilda.org.dailymenupicker
 
+import android.app.AlarmManager
 import android.app.FragmentManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -13,10 +17,6 @@ import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import soft.brunhilda.org.dailymenupicker.fragments.*
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import soft.brunhilda.org.dailymenupicker.notification.AlarmReceiver
 import java.util.*
 
@@ -108,8 +108,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setUpNotification(){
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(Calendar.HOUR_OF_DAY, 9)
-        calendar.set(Calendar.MINUTE, 46) // TODO set up this values on the settings page
+        calendar.set(Calendar.HOUR_OF_DAY, 10)
+        calendar.set(Calendar.MINUTE, 30) // TODO set up this values on the settings page
 
         val intent = Intent(this, AlarmReceiver::class.java)
         val alarmIntent = PendingIntent.getBroadcast(this, AlarmReceiver.NOTIFICATION_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)

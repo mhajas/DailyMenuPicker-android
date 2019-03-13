@@ -34,10 +34,10 @@ class CachedRestDataResolver(
     private fun resolvePlace(googlePlace: ComparablePlace) {
         var restaurantWeekData: RestaurantWeekData? = loadFromCache(googlePlace)
 
-        if (restaurantWeekData == null) {
+        if (restaurantWeekData?.findTodayMenu() == null) {
             synchronized(LOCK) {
                 callbackCalled++
-                println("Calling call number: $callbackCalled")
+                println("Calling call number: $callbackCalled with id: ${googlePlace.placeId} name: ${googlePlace.name}")
             }
 
             foodService.getData(googlePlace.placeId).enqueue(object : Callback<RestaurantWeekTransferData> {

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 
 
 class RetrofitApi {
-    private val url = "http://rest-endpoint-rest-endpoint.193b.starter-ca-central-1.openshiftapps.com/restendpoint/"
+    private val url = "http://dailymenupicker-dailymenupicker.1d35.starter-us-east-1.openshiftapps.com/"
 
     val okHttpClient = OkHttpClient.Builder()
             .readTimeout(5, TimeUnit.SECONDS)

@@ -43,7 +43,7 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
 
-        notificationManager.notify(NOTIFICATION_CODE, repeatedNotification)
+        //notificationManager.notify(NOTIFICATION_CODE, repeatedNotification)
     }
 
     /**
